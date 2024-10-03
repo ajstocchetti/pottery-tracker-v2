@@ -1,0 +1,7 @@
+.formItem {
+  margin-bottom: 0.75rem;
+}
+
+div.formItem > label {
+  margin-right: 5px;
+}

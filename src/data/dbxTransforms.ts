@@ -18,14 +18,16 @@ function toTwo(data: DbxData): DbxData {
     if (piece.date_to_glaze) return "AT_GLAZE";
     if (piece.returned_from_bisque) return "NEEDS_GLAZE";
     if (piece.date_to_bisque) return "AT_BISQUE";
-    if (piece.date_trimmed || piece.is_hand_built) return "DRYING_OUT";
+    if (piece.date_trimmed || piece.is_handbuilt) return "DRYING_OUT";
     return "NEEDS_TRIMMING";
   }
-  const pieces = data.pieces.map((v1) => {
+  const pieces = data.pieces.map((v1, index) => {
     const piece: Piece = {
       id: v1.id,
-      // created_at: v1.created_at || new Date().toISOString(),
-      // updated_at: v1.updated_at || new Date().toISOString(),
+      created_at: v1.created_at || new Date(1727758800000 + 100 * index),
+      // 1727758800000 -> October 1, 2024
+      // then add a 100ms per item so that the created_at order matches the array order
+      updated_at: v1.updated_at || new Date(),
       date_thrown: v1.date_thrown,
       date_trimmed: v1.date_trimmed,
       date_to_bisque: v1.date_to_bisque,

@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { v4 as uuid } from "uuid";
 import { snapshot } from "valtio";
 import { dataFilePath } from "src/config";
 import { state } from "src/store/valio";
@@ -40,6 +41,16 @@ async function loadAllData(): Promise<DbxData | undefined> {
   }
 }
 
+async function saveDataFile(data: DbxData) {
+  const toSync = JSON.stringify(data);
+  await getDbx().filesUpload({
+    path: dataFilePath,
+    contents: toSync,
+    mute: true,
+    mode: "overwrite",
+  });
+}
+
 export async function loadPieces(
   ordering: string,
   status: string
@@ -50,5 +61,40 @@ export async function loadPieces(
   return _.sortBy(pieces, ordering);
 }
 
-export async function savePieces() {}
-export async function savePiece() {}
+export async function loadPiece(pieceId: string) {
+  const data = await loadAllData();
+  const pieces = data?.pieces || [];
+  return _.find(pieces, { id: pieceId });
+}
+
+export async function savePiece(
+  piece: Piece,
+  isNew: boolean = false
+): Promise<Piece | undefined> {
+  function getStatus(piece: Piece): string {
+    if (piece.is_abandoned) return "ABANDONED";
+    if (piece.returned_from_glaze) return "COMPLETE";
+    if (piece.date_to_glaze) return "AT_GLAZE";
+    if (piece.returned_from_bisque) return "NEEDS_GLAZE";
+    if (piece.date_to_bisque) return "AT_BISQUE";
+    if (piece.date_trimmed || piece.is_handbuilt) return "DRYING_OUT";
+    return "NEEDS_TRIMMING";
+  }
+  const toSave = {
+    ...piece,
+    updated_at: new Date(),
+    status: getStatus(piece),
+  };
+  if (isNew) {
+    toSave.id = uuid();
+    toSave.created_at = toSave.updated_at;
+  }
+
+  const { pieces, images, version } = await loadAllData();
+  if (isNew) pieces.push(toSave);
+  else {
+    const index = _.findIndex(pieces, { id: toSave.id });
+    pieces[index] = toSave;
+  }
+  saveDataFile({ pieces, images, version });
+}
