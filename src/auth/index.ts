@@ -18,8 +18,9 @@ export function clearLoginCookie() {
   return cookies.remove(tokenCookieName);
 }
 
-export function dbxLogin(account: any) {
+export function dbxLogin(dbxInstance: any, account: any) {
   state.isLoggedIn = true;
+  state.dbxInstance = dbxInstance;
   state.dbxAccount = account;
 }
 

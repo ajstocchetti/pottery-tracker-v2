@@ -1,0 +1,12 @@
+.pieceCard {
+  text-align: left;
+  border: solid 1px black;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.5rem;
+}
+
+.twoCol {
+  display: flex;
+  flex-direction: row;
+}

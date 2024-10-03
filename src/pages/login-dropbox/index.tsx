@@ -31,7 +31,7 @@ const DropboxUserLogin = () => {
       const dbx = new Dropbox({ accessToken });
       // try getting user account to verify that key is good
       const account = await dbx.usersGetCurrentAccount();
-      dbxLogin(account);
+      dbxLogin(dbx, account);
       return true;
     } catch (err) {
       console.log("Invalid dropbox account token");
@@ -69,7 +69,7 @@ const DropboxUserLogin = () => {
   }, []);
 
   return (
-    <div style={{ height: "90vh" }}>
+    <div style={{ margin: "auto", width: "50%", textAlign: "center" }}>
       <a href={authUrl}>
         <Button color="primary" variant="filled" disabled={!authUrl}>
           Log In With Dropbox

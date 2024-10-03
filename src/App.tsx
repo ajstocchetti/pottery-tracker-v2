@@ -1,7 +1,17 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { state } from "src/store/valio";
 import DropboxUserLogin from "src/pages/login-dropbox";
+import Header from "src/components/header";
+import { PieceList } from "src/pages/piecelist";
 import "./App.css";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <PieceList />,
+  },
+]);
 
 function App() {
   const { isLoggedIn } = useSnapshot(state);
@@ -10,12 +20,10 @@ function App() {
 
   return (
     <>
-      <div></div>
-      <h1>Pottery Tracker...</h1>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <pre>{JSON.stringify({ isLoggedIn }, null, 2)}</pre>
+      <Header />
+      <div id="mainContent">
+        <RouterProvider router={router} />
+      </div>
     </>
   );
 }
