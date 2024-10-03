@@ -1,5 +1,6 @@
 import { Button, Collapse, Popconfirm } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import { Piece } from "src/interfaces";
 import { savePiece } from "src/data";
 import styles from "./pieceCard.module.css";
@@ -75,7 +76,7 @@ export function PieceCard(props: Props) {
     <div className={styles.pieceCard}>
       {showStatus ? <div>{piece.status}</div> : null}
       <div>
-        <a href={`/pieces/${piece.id}`}>Thumbnail goes here</a>
+        <Link to={`/pieces/${piece.id}`}>Thumbnail goes here</Link>
       </div>
       {backFromKilnButton}
       <StdLabeledData label="Form" value={piece.form_type} />

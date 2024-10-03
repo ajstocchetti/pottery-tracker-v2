@@ -1,16 +1,14 @@
-import { Button } from "antd";
-import { logout } from "src/auth";
-
+import { Button, Dropdown, Space } from "antd";
 import type { MenuProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Space } from "antd";
-
+import { Link } from "react-router-dom";
+import { logout } from "src/auth";
 import style from "./header.module.css";
 
 const items: MenuProps["items"] = [
   {
     key: "pieces",
-    label: <a href="/">Pieces</a>,
+    label: <Link to="/">Pieces</Link>,
   },
   {
     key: "images",
