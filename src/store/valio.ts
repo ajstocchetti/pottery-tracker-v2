@@ -4,16 +4,14 @@ import { devtools } from "valtio/utils";
 interface store {
   isLoggedIn: boolean;
   user: null | object;
-  dbxAccount: null | any; // dropbox account
   dbxInstance: null | any;
   pieceListSort: string;
   pieceListStatus: string;
 }
 
-const initialStore: store = {
+export const initialStore: store = {
   isLoggedIn: false,
   user: null,
-  dbxAccount: null,
   dbxInstance: null,
   pieceListSort: "updated_at",
   pieceListStatus: "ALL",

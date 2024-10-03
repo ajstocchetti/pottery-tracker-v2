@@ -1,5 +1,5 @@
 import Cookies from "universal-cookie";
-import { state } from "src/store/valio";
+import { initialStore, state } from "src/store/valio";
 
 const cookies = new Cookies();
 const tokenCookieName = "DBXACCSTOKEN";
@@ -21,12 +21,11 @@ export function clearLoginCookie() {
 export function dbxLogin(dbxInstance: any, account: any) {
   state.isLoggedIn = true;
   state.dbxInstance = dbxInstance;
-  state.dbxAccount = account;
+  state.user = { email: account?.result?.email };
 }
 
 export function logout() {
-  console.log("logout...");
   clearLoginCookie();
+  Object.entries(initialStore).forEach(([key, val]) => (state[key] = val));
   window.location.assign("/");
-  // TODO: update valtio
 }
