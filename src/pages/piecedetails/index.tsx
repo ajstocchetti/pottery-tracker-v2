@@ -115,7 +115,7 @@ export default function PieceDetails() {
     const updated = await savePiece(piece, isNewPiece);
     if (updated) {
       if (isNewPiece) {
-        navigate(`pieces/${updated.id}`);
+        navigate(`/pieces/${updated.id}`);
       } else setPiece(updated);
     }
   }

@@ -1,0 +1,11 @@
+.pieceListOptions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pieceListOptions > * {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+}

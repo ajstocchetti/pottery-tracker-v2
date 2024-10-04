@@ -116,4 +116,5 @@ export async function savePiece(
     pieces[index] = toSave;
   }
   saveDataFile({ pieces, images, version });
+  return toSave;
 }

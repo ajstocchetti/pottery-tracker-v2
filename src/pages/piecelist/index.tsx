@@ -1,10 +1,12 @@
+import { Button, Select } from "antd";
 import { useEffect, useState } from "react";
-import { Select } from "antd";
+import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { loadPieces } from "src/data";
 import { Piece } from "src/interfaces";
 import { state } from "src/store/valio";
 import { PieceCard } from "./pieceCard";
+import style from "./piecelist.module.css";
 
 const statusTypes: string[] = [
   "NEEDS_TRIMMING",
@@ -65,28 +67,30 @@ export function PieceList({}) {
 
   return (
     <>
-      <Select
-        value={pieceListStatus}
-        onChange={setStatus}
-        style={{ minWidth: 180 }}
-      >
-        {statusTypes.map((status) => (
-          <Select.Option value={status} key={status}>
-            {status}
-          </Select.Option>
-        ))}
-      </Select>
-      <Select
-        value={pieceListSort}
-        onChange={setSort}
-        style={{ minWidth: 180 }}
-      >
-        {sortOptions.map((sorter) => (
-          <Select.Option value={sorter} key={sorter}>
-            {sorter}
-          </Select.Option>
-        ))}
-      </Select>
+      <div className={style.pieceListOptions}>
+        <div>
+          {/* the div is for styling */}
+          <Link to="/pieces/new">
+            <Button type="primary" block>
+              New Piece
+            </Button>
+          </Link>
+        </div>
+        <Select value={pieceListStatus} onChange={setStatus}>
+          {statusTypes.map((status) => (
+            <Select.Option value={status} key={status}>
+              {status}
+            </Select.Option>
+          ))}
+        </Select>
+        <Select value={pieceListSort} onChange={setSort}>
+          {sortOptions.map((sorter) => (
+            <Select.Option value={sorter} key={sorter}>
+              {sorter}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
       {pieces.map((piece) => (
         <PieceCard
           piece={piece}
