@@ -313,6 +313,7 @@ export default function PieceDetails() {
         <div>
           {piece.images.map((fileName) => (
             <Image
+              key={fileName}
               fileName={fileName}
               customStyle={{ margin: "0 1rem 1rem 0" }}
             />
