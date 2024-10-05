@@ -27,5 +27,5 @@ export interface Piece {
   fate: string;
   status: string;
   weight: string;
-  images: Image[];
+  images: string[];
 }

@@ -14,7 +14,7 @@ export const initialStore: store = {
   user: null,
   dbxInstance: null,
   pieceListSort: "updated_at",
-  pieceListStatus: "ALL",
+  pieceListStatus: "NEEDS_TRIMMING",
 };
 
 export const state = proxy(initialStore);

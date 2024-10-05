@@ -7,16 +7,20 @@ import { Image, Piece } from "src/interfaces";
 import { transform } from "./dbxTransforms";
 
 const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
-let PIECES = [];
-let IMAGES = [];
-let VERSION = 3;
-let DATA_LAST_LOADED = 0;
+let PIECES: Piece[] = [];
+let IMAGES: Image[] = [];
+let VERSION: number = 3;
+let DATA_LAST_LOADED: number = 0;
+const IMAGE_SRC: { [fileName: string]: unknown } = {};
 
 interface DbxData {
   pieces: Piece[];
   images: Image[];
   version: number;
 }
+
+const imagesDir = "/images";
+const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 
 function getDbx() {
   const { dbxInstance } = snapshot(state);
@@ -117,4 +121,19 @@ export async function savePiece(
   }
   saveDataFile({ pieces, images, version });
   return toSave;
+}
+
+export async function getImageSrc(fileName: string) {
+  if (IMAGE_SRC[fileName]) return IMAGE_SRC[fileName];
+  try {
+    const src = await getDbx().filesGetTemporaryLink({
+      path: fullPath(fileName),
+    });
+    const link = src?.result?.link;
+    if (link) IMAGE_SRC[fileName] = link;
+    return link;
+  } catch (err) {
+    console.error("Error loading image content");
+    console.error(err);
+  }
 }

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Piece } from "src/interfaces";
 import { savePiece } from "src/data";
 import styles from "./pieceCard.module.css";
+import Thumbnail from "./thumbnail";
 
 interface Props {
   piece: Piece;
@@ -76,7 +77,9 @@ export function PieceCard(props: Props) {
     <div className={styles.pieceCard}>
       {showStatus ? <div>{piece.status}</div> : null}
       <div>
-        <Link to={`/pieces/${piece.id}`}>Thumbnail goes here</Link>
+        <Link to={`/pieces/${piece.id}`}>
+          <Thumbnail fileName={piece.images[0]} />
+        </Link>
       </div>
       {backFromKilnButton}
       <StdLabeledData label="Form" value={piece.form_type} />

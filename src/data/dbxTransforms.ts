@@ -67,7 +67,7 @@ function toTwo(data: DbxDataIn): DbxData {
       glaze: v1.glaze,
       fate: v1.fate,
       weight: v1.clay_weight,
-      images: [],
+      images: v1.images,
       status: "migrating",
     };
     piece.status = getV2Status(piece);
