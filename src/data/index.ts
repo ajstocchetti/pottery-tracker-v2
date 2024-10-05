@@ -19,7 +19,7 @@ interface DbxData {
   version: number;
 }
 
-const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
+/* DROPBOX */
 
 function getDbx() {
   const { dbxInstance } = snapshot(state);
@@ -73,6 +73,18 @@ async function saveDataFile(data: DbxData) {
   DATA_LAST_LOADED = now;
 }
 
+export function clearDbxCache() {
+  PIECES = [];
+  IMAGES = [];
+  VERSION = 3;
+  DATA_LAST_LOADED = 0;
+  Object.keys(IMAGE_SRC).forEach((key) => {
+    delete IMAGE_SRC[key];
+  });
+}
+
+/* PIECES */
+
 export async function loadPieces(
   ordering: string,
   status: string
@@ -122,6 +134,54 @@ export async function savePiece(
   return toSave;
 }
 
+/* IMAGES */
+
+const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
+
+export async function loadImages() {
+  const resp = await loadAllData();
+  return resp.images;
+}
+
+export async function checkImageDirectory(cursor = null, dbx = getDbx()) {
+  let func;
+  if (cursor) {
+    func = dbx.filesListFolderContinue({ cursor });
+  } else {
+    await loadAllData(); // refresh data before starting
+    func = dbx.filesListFolder({
+      path: imagesDir,
+      recursive: false,
+    });
+  }
+
+  const resp = await func;
+  resp.result.entries.forEach((img) => {
+    if (_.findIndex(IMAGES, { fileName: img.name }) === -1) {
+      // image not in store, add image
+      const fileName = img.name;
+      IMAGES.push({
+        fileName,
+        created_at: new Date().toISOString(),
+        is_inspiration: false,
+        number_pieces: 1,
+        all_pieces_added: false,
+        tags: [],
+      });
+    }
+  });
+
+  if (resp.result.has_more) {
+    return checkImageDirectory(resp.result.cursor, dbx);
+  } else {
+    saveDataFile({
+      pieces: PIECES,
+      images: IMAGES,
+      version: VERSION,
+    });
+  }
+}
+
 export async function getImageSrc(fileName: string) {
   if (IMAGE_SRC[fileName]) return IMAGE_SRC[fileName];
   try {
@@ -135,14 +195,4 @@ export async function getImageSrc(fileName: string) {
     console.error("Error loading image content");
     console.error(err);
   }
-}
-
-export function clearDbxCache() {
-  PIECES = [];
-  IMAGES = [];
-  VERSION = 3;
-  DATA_LAST_LOADED = 0;
-  Object.keys(IMAGE_SRC).forEach((key) => {
-    delete IMAGE_SRC[key];
-  });
 }

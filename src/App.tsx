@@ -6,6 +6,7 @@ import Header from "src/components/header";
 import ErrorBoundary from "src/components/error-boundry";
 import PieceDetails from "src/pages/piecedetails";
 import { PieceList } from "src/pages/piecelist";
+import Tools from "src/pages/tools";
 import "./App.css";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Routes>
               <Route exact path="/" Component={PieceList} />
               <Route path="pieces/:pieceId" Component={PieceDetails} />
+              <Route path="tools" Component={Tools} />
             </Routes>
           </div>
         </>

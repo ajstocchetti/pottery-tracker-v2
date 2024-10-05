@@ -14,6 +14,10 @@ const items: MenuProps["items"] = [
     key: "images",
     label: "Images",
   },
+  {
+    key: "tools",
+    label: <Link to="/tools">Tools</Link>,
+  },
 ];
 
 export default function Header() {
