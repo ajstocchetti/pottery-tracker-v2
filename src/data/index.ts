@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { v4 as uuid } from "uuid";
 import { snapshot } from "valtio";
-import { dataFilePath } from "src/config";
+import { dataFilePath, imagesDir } from "src/config";
 import { state } from "src/store/valio";
 import { Image, Piece } from "src/interfaces";
 import { transform } from "./dbxTransforms";
@@ -19,7 +19,6 @@ interface DbxData {
   version: number;
 }
 
-const imagesDir = "/images";
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 
 function getDbx() {
@@ -136,4 +135,14 @@ export async function getImageSrc(fileName: string) {
     console.error("Error loading image content");
     console.error(err);
   }
+}
+
+export function clearDbxCache() {
+  PIECES = [];
+  IMAGES = [];
+  VERSION = 3;
+  DATA_LAST_LOADED = 0;
+  Object.keys(IMAGE_SRC).forEach((key) => {
+    delete IMAGE_SRC[key];
+  });
 }

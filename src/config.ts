@@ -3,3 +3,4 @@ export const dbxClientId: string =
 export const authCallbackUrl: string =
   import.meta.env.REACT_APP_DBX_AUTH_CALLBACK || "http://localhost:5173";
 export const dataFilePath: string = "/data.json";
+export const imagesDir = "/images";

@@ -1,5 +1,6 @@
 import Cookies from "universal-cookie";
 import { initialStore, state } from "src/store/valio";
+import { clearDbxCache } from "src/data";
 
 const cookies = new Cookies();
 const tokenCookieName = "DBXACCSTOKEN";
@@ -25,6 +26,7 @@ export function dbxLogin(dbxInstance: any, account: any) {
 }
 
 export function logout() {
+  clearDbxCache();
   clearLoginCookie();
   Object.entries(initialStore).forEach(([key, val]) => (state[key] = val));
   window.location.assign("/");
