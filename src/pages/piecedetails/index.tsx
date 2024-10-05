@@ -8,6 +8,7 @@ import { Piece } from "src/interfaces";
 import { loadPiece, savePiece } from "src/data";
 
 import style from "./piecedetail.module.css";
+import Image from "src/components/image";
 
 interface GlazeDetails {
   name: string;
@@ -305,6 +306,18 @@ export default function PieceDetails() {
           checked={piece.returned_from_glaze}
           onChange={setPieceChecked("returned_from_glaze")}
         />
+      </div>
+
+      <div>
+        <h3>Images</h3>
+        <div>
+          {piece.images.map((fileName) => (
+            <Image
+              fileName={fileName}
+              customStyle={{ margin: "0 1rem 1rem 0" }}
+            />
+          ))}
+        </div>
       </div>
 
       <div className={style.formItem}>

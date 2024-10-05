@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { getImageSrc } from "src/data";
+import style from "./image.module.css";
 
 interface Props {
   fileName: string;
-  style: { [css: string]: any };
+  customStyle?: { [css: string]: any };
 }
 
 export default function Image(props: Props) {
   const [src, setSrc] = useState(undefined);
-  const { fileName, style = {} } = props;
+  const { fileName, customStyle = {} } = props;
 
   async function asncHandler() {
     const imgSrc = await getImageSrc(fileName);
@@ -19,5 +20,12 @@ export default function Image(props: Props) {
     asncHandler();
   }, [fileName]);
 
-  return <img src={src} alt={fileName} style={style} />;
+  return (
+    <img
+      src={src}
+      alt={fileName}
+      className={style.standard}
+      style={customStyle}
+    />
+  );
 }
