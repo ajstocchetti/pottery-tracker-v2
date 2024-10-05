@@ -9,7 +9,7 @@ import { transform } from "./dbxTransforms";
 const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
 let PIECES = [];
 let IMAGES = [];
-let VERSION = 2;
+let VERSION = 3;
 let DATA_LAST_LOADED = 0;
 
 interface DbxData {

@@ -1,5 +1,11 @@
 import { Image, Piece } from "src/interfaces";
 
+interface DbxDataIn {
+  pieces: any[];
+  images: any[];
+  version: number;
+}
+
 interface DbxData {
   pieces: Piece[];
   images: Image[];
@@ -8,10 +14,29 @@ interface DbxData {
 
 export function transform(data: DbxData) {
   if (data.version < 2) data = toTwo(data);
+  if (data.version < 3) data = toThree(data);
   return data;
 }
 
-function toTwo(data: DbxData): DbxData {
+function toThree(data: DbxDataIn): DbxData {
+  const images: Image[] = data.images.map((img) => {
+    return {
+      fileName: img.fileName,
+      created_at: img.addedAt,
+      is_inspiration: (img.tags || []).includes("inspiration"),
+      number_pieces: img.numPieces || 1,
+      tags: img.tags || [],
+      all_pieces_added: img.isFullAssoc,
+    };
+  });
+  return {
+    pieces: data.pieces,
+    images: images,
+    version: 3,
+  };
+}
+
+function toTwo(data: DbxDataIn): DbxData {
   function getV2Status(piece: any): string {
     if (piece.is_abandoned) return "ABANDONED";
     if (piece.returned_from_glaze) return "COMPLETE";

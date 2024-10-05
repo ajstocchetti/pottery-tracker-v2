@@ -1,9 +1,12 @@
 export interface Image {
-  id: string;
-  image: string;
+  // id: string;
+  // image: string;
+  fileName: string;
   is_inspiration: boolean;
   number_pieces: number;
   tags: string[];
+  created_at: string;
+  all_pieces_added: boolean;
 }
 export interface Piece {
   id: string;
