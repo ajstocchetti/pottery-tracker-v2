@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 
+import AddImageButton from "src/components/addImageButton";
 import Image from "src/components/image";
 import { Image as ImageInterface, Piece } from "src/interfaces";
 import { loadAvailableImages, loadPiece, savePiece } from "src/data";
@@ -117,6 +118,11 @@ export default function PieceDetails() {
     } catch (err) {
       setLoadErr(err);
     }
+  }
+
+  async function onImageAdded() {
+    loadPieceHandler();
+    availableImageHandler();
   }
 
   async function savePieceHandler(piece: Piece) {
@@ -332,15 +338,16 @@ export default function PieceDetails() {
         />
       </div>
 
-      <div>
+      <div className={style.formItem}>
         <h3>Images</h3>
         <ImageList
           images={piece.images}
           onListChange={setPieceImages}
           editing={editingImages}
         />
+        <AddImageButton pieceId={piece.id} onUpload={onImageAdded} />
         <Button onClick={() => setEditingImages(!editingImages)}>
-          Toggle Editor
+          {editingImages ? "Close Image Selector" : "Select Images"}
         </Button>
         {editingImages && (
           <div>

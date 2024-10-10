@@ -161,6 +161,37 @@ export async function loadAvailableImages() {
   );
 }
 
+export async function uploadImage(fileInfo: File, pieceId: string) {
+  try {
+    const sourceName = fileInfo.name;
+    const resp = await getDbx().filesUpload({
+      path: fullPath(sourceName),
+      contents: fileInfo,
+      autorename: true, // have dropbox rename if file exists
+      mute: true,
+    });
+
+    const fileName = resp.result.name;
+    IMAGES.push({
+      fileName: fileName,
+      created_at: new Date().toISOString(),
+      is_inspiration: false,
+      number_pieces: 1,
+      all_pieces_added: true,
+      tags: [],
+    });
+
+    const pieceIndex = _.findIndex(PIECES, { id: pieceId });
+    if (pieceIndex) {
+      PIECES[pieceIndex].images.push(fileName);
+    }
+    saveData();
+  } catch (err) {
+    console.warn("Error uploading file");
+    console.warn(err);
+  }
+}
+
 export async function saveImage(image: Image): Promise<Image | undefined> {
   await loadAllData();
   const index = _.findIndex(IMAGES, { fileName: image.fileName });
