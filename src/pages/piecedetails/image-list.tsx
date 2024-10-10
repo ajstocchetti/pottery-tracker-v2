@@ -1,4 +1,5 @@
 import { Button, Popconfirm } from "antd";
+import DeleteImageButton from "src/components/imageDelete";
 import Image from "src/components/image";
 import style from "./piecedetail.module.css";
 
@@ -6,6 +7,7 @@ interface Props {
   images: string[];
   editing: boolean;
   onListChange: (images: string[]) => void;
+  refresh: () => void;
 }
 
 export default function ImageList(props: Props) {
@@ -35,7 +37,9 @@ export default function ImageList(props: Props) {
           <Image fileName={fileName} customStyle={{ display: "block" }} />
           {editing && (
             <div>
-              <Button onClick={setPrimary(index)}>Set as Primary</Button>
+              <Button color="primary" onClick={setPrimary(index)}>
+                Set as Primary
+              </Button>
               <Popconfirm
                 title="Remove from Piece"
                 description="Remove image from the piece"
@@ -43,8 +47,9 @@ export default function ImageList(props: Props) {
                 okText="Remove"
                 cancelText="Cancel"
               >
-                <Button>Remove Image</Button>
+                <Button color="primary">Remove Image</Button>
               </Popconfirm>
+              <DeleteImageButton fileName={fileName} onDelete={props.refresh} />
             </div>
           )}
         </div>

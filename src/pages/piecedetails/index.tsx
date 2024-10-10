@@ -344,6 +344,7 @@ export default function PieceDetails() {
           images={piece.images}
           onListChange={setPieceImages}
           editing={editingImages}
+          refresh={onImageAdded}
         />
         <AddImageButton pieceId={piece.id} onUpload={onImageAdded} />
         <Button onClick={() => setEditingImages(!editingImages)}>

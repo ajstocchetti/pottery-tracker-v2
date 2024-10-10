@@ -25,6 +25,11 @@ export default function Images() {
   }
 
   return images.map((image, index) => (
-    <ImageCard key={image.fileName} image={image} onChange={onUpdate(index)} />
+    <ImageCard
+      key={image.fileName}
+      image={image}
+      onChange={onUpdate(index)}
+      onDelete={loadImageAsyncHandler}
+    />
   ));
 }

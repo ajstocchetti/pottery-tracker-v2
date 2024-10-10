@@ -208,6 +208,24 @@ export async function saveImage(image: Image): Promise<Image | undefined> {
   return IMAGES[index]; // return the image from IMAGES, in case updateImagePieceCount was called and updated the object
 }
 
+export async function deleteImage(fileName: string) {
+  try {
+    const fullName = fullPath(fileName);
+    await getDbx().filesDeleteV2({ path: fullName });
+    await loadAllData();
+    const imageIndex = _.findIndex(IMAGES, { fileName: fileName });
+    if (imageIndex !== -1) {
+      IMAGES.splice(imageIndex, 1);
+    }
+    PIECES.forEach((piece) => {
+      piece.images = piece.images.filter((fn) => fn !== fileName);
+    });
+    saveData();
+  } catch (err) {
+    console.warn("Error deleting image:", err);
+  }
+}
+
 export async function updateImagePieceCount() {
   const images: { [imgId: string]: number } = {};
   PIECES.forEach((piece) => {
