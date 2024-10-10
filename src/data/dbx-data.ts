@@ -184,13 +184,6 @@ export async function loadImages(
   return _.sortBy(images, "created_at");
 }
 
-export async function loadAvailableImages() {
-  const images = await loadImages();
-  return images.filter(
-    (image) => !image.all_pieces_added && !image.is_inspiration
-  );
-}
-
 export async function uploadImage(fileInfo: File, pieceId: string) {
   try {
     const sourceName = fileInfo.name;

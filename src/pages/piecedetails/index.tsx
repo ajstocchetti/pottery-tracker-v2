@@ -16,12 +16,7 @@ import _ from "lodash";
 import AddImageButton from "src/components/addImageButton";
 import Image from "src/components/image";
 import { Image as ImageInterface, Piece } from "src/interfaces";
-import {
-  deletePiece,
-  loadAvailableImages,
-  loadPiece,
-  savePiece,
-} from "src/data";
+import { deletePiece, loadImages, loadPiece, savePiece } from "src/data";
 
 import ImageList from "./image-list";
 import style from "./piecedetail.module.css";
@@ -201,7 +196,7 @@ export default function PieceDetails() {
   }
 
   async function availableImageHandler() {
-    const images = await loadAvailableImages();
+    const images = await loadImages("NEED_PIECES");
     const x = images.filter((img) => !piece?.images.includes(img.fileName));
     setAvailableImages(x);
   }
