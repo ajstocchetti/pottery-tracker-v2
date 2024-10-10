@@ -12,6 +12,7 @@ let IMAGES: Image[] = [];
 let VERSION: number = 3;
 let DATA_LAST_LOADED: number = 0;
 const IMAGE_SRC: { [fileName: string]: unknown } = {};
+let IMAGE_PIECES: { [imgId: string]: string[] } = {};
 
 interface DbxData {
   pieces: Piece[];
@@ -148,6 +149,7 @@ export async function savePiece(
 export async function deletePiece(pieceId: string) {
   await loadAllData();
   _.remove(PIECES, { id: pieceId });
+  await updateImagePieceCount();
   saveData();
 }
 
@@ -246,16 +248,20 @@ export async function deleteImage(fileName: string) {
   }
 }
 
+export function getPiecesForImage(fileName: string): string[] {
+  return IMAGE_PIECES[fileName] || [];
+}
+
 export async function updateImagePieceCount() {
-  const images: { [imgId: string]: number } = {};
+  IMAGE_PIECES = {};
   PIECES.forEach((piece) => {
     piece.images.forEach((fileName) => {
-      if (!images[fileName]) images[fileName] = 0;
-      images[fileName] = images[fileName] + 1;
+      if (!IMAGE_PIECES[fileName]) IMAGE_PIECES[fileName] = [];
+      IMAGE_PIECES[fileName].push(piece.id);
     });
   });
   IMAGES = IMAGES.map((image) => {
-    const numPieces = images[image.fileName] || 0;
+    const numPieces = (IMAGE_PIECES[image.fileName] || []).length;
     const full = numPieces >= image.number_pieces;
     return {
       ...image,

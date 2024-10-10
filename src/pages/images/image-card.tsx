@@ -1,10 +1,12 @@
 import { InputNumber, Switch } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteImageButton from "src/components/imageDelete";
+import { getPiecesForImage } from "src/data";
 import Image from "src/components/image";
 import { Image as ImageInterface } from "src/interfaces";
 import style from "./image-card.module.css";
+import { Link } from "react-router-dom";
 
 interface Props {
   image: ImageInterface;
@@ -15,6 +17,11 @@ interface Props {
 export default function ImageCard(props: Props) {
   const { image, onDelete, onChange } = props;
   const [showRaw, setShowRaw] = useState<boolean>(false);
+  const [pieces, setPieces] = useState<string[]>([]);
+
+  useEffect(() => {
+    setPieces(getPiecesForImage(image.fileName));
+  }, [image.fileName]);
 
   function saveHandler(update: object) {
     onChange({
@@ -58,6 +65,20 @@ export default function ImageCard(props: Props) {
           <CloseCircleOutlined />
         )}
       </div>
+
+      {pieces.length ? (
+        <div>
+          <span>Pieces:</span>
+          <ul>
+            {pieces.map((pieceId) => (
+              <li key={pieceId}>
+                <Link to={`/pieces/${pieceId}`}>{pieceId}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       <div>Created at: {image.created_at}</div>
       <DeleteImageButton fileName={image.fileName} onDelete={onDelete} />
       <div>
