@@ -149,9 +149,9 @@ export async function savePiece(
 
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 
-export async function loadImages() {
+export async function loadImages(): Promise<Image[]> {
   const resp = await loadAllData();
-  return resp.images;
+  return _.sortBy(resp.images, "created_at");
 }
 
 export async function loadAvailableImages() {
@@ -159,6 +159,22 @@ export async function loadAvailableImages() {
   return images.filter(
     (image) => !image.all_pieces_added && !image.is_inspiration
   );
+}
+
+export async function saveImage(image: Image): Promise<Image | undefined> {
+  await loadAllData();
+  const index = _.findIndex(IMAGES, { fileName: image.fileName });
+  if (index < 0) {
+    console.warn(`Could not find image to save with name ${image.fileName}`);
+    return;
+  }
+  const previousPieces = IMAGES[index].number_pieces;
+  IMAGES[index] = image;
+  if (previousPieces !== image.number_pieces) {
+    await updateImagePieceCount();
+  }
+  saveData(); // do not await, need to return image right away
+  return IMAGES[index]; // return the image from IMAGES, in case updateImagePieceCount was called and updated the object
 }
 
 export async function updateImagePieceCount() {
@@ -171,7 +187,7 @@ export async function updateImagePieceCount() {
   });
   IMAGES = IMAGES.map((image) => {
     const numPieces = images[image.fileName] || 0;
-    const full = numPieces === image.number_pieces;
+    const full = numPieces >= image.number_pieces;
     return {
       ...image,
       all_pieces_added: full,

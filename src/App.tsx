@@ -4,6 +4,7 @@ import { state } from "src/store/valio";
 import DropboxUserLogin from "src/pages/login-dropbox";
 import Header from "src/components/header";
 import ErrorBoundary from "src/components/error-boundry";
+import Images from "src/pages/images";
 import PieceDetails from "src/pages/piecedetails";
 import { PieceList } from "src/pages/piecelist";
 import Tools from "src/pages/tools";
@@ -23,6 +24,7 @@ function App() {
             <Routes>
               <Route exact path="/" Component={PieceList} />
               <Route path="pieces/:pieceId" Component={PieceDetails} />
+              <Route path="images" Component={Images} />
               <Route path="tools" Component={Tools} />
             </Routes>
           </div>
