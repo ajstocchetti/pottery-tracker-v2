@@ -145,6 +145,12 @@ export async function savePiece(
   return toSave;
 }
 
+export async function deletePiece(pieceId: string) {
+  await loadAllData();
+  _.remove(PIECES, { id: pieceId });
+  saveData();
+}
+
 /* IMAGES */
 let imageSrcTimeoutCount = 0;
 

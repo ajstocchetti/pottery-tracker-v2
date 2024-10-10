@@ -12,10 +12,10 @@ export interface Piece {
   id: string;
   created_at: Date | null;
   updated_at: Date | null;
-  date_thrown: Date | null;
-  date_trimmed: Date | null;
-  date_to_bisque: Date | null;
-  date_to_glaze: Date | null;
+  date_thrown: string | null;
+  date_trimmed: string | null;
+  date_to_bisque: string | null;
+  date_to_glaze: string | null;
   returned_from_bisque: boolean;
   returned_from_glaze: boolean;
   is_abandoned: boolean;

@@ -1,4 +1,13 @@
-import { Button, Checkbox, DatePicker, Input, Radio, Switch } from "antd";
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  Input,
+  Popconfirm,
+  Radio,
+  Switch,
+} from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -7,7 +16,12 @@ import _ from "lodash";
 import AddImageButton from "src/components/addImageButton";
 import Image from "src/components/image";
 import { Image as ImageInterface, Piece } from "src/interfaces";
-import { loadAvailableImages, loadPiece, savePiece } from "src/data";
+import {
+  deletePiece,
+  loadAvailableImages,
+  loadPiece,
+  savePiece,
+} from "src/data";
 
 import ImageList from "./image-list";
 import style from "./piecedetail.module.css";
@@ -123,6 +137,11 @@ export default function PieceDetails() {
   async function onImageAdded() {
     loadPieceHandler();
     availableImageHandler();
+  }
+
+  async function deleteClickHandler() {
+    await deletePiece(piece?.id);
+    navigate("/");
   }
 
   async function savePieceHandler(piece: Piece) {
@@ -374,6 +393,20 @@ export default function PieceDetails() {
         <label>Eventually Used As:</label>
         <Input value={piece.fate} onChange={setPieceEvtTarget("fate")} />
       </div>
+
+      <hr />
+      <Popconfirm
+        title="Delete Piece"
+        description="Are you sure you want to delete this piece?"
+        onConfirm={deleteClickHandler}
+        okText="DELETE"
+        cancelText="Cancel"
+        icon={<DeleteOutlined />}
+      >
+        <Button color="danger" variant="filled" disabled={isNewPiece}>
+          Delete Piece
+        </Button>
+      </Popconfirm>
 
       <hr />
       <div className={style.formItem}>
