@@ -1,3 +1,10 @@
+# TODOs
+
+0. file name standardization: multi-word.tsx vs multiWord.tsx
+1. button styling
+2. delete images
+3. image -> piece (image <-> piece) reference
+
 # Dropbox API Resources
 
 https://developers.dropbox.com/error-handling-guide
