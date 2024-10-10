@@ -13,7 +13,7 @@ export default function Tools() {
   const [images, setImages] = useState<Image[]>([]);
 
   async function imgAsyncHandler() {
-    const imgs = await loadImages();
+    const imgs = await loadImages("ALL");
     setImages(imgs);
   }
 
