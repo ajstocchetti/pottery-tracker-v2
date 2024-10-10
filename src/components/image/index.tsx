@@ -5,11 +5,12 @@ import style from "./image.module.css";
 interface Props {
   fileName: string;
   customStyle?: { [css: string]: any };
+  onClick?: () => void;
 }
 
 export default function Image(props: Props) {
   const [src, setSrc] = useState(undefined);
-  const { fileName, customStyle = {} } = props;
+  const { fileName, customStyle = {}, onClick } = props;
 
   async function asncHandler() {
     const imgSrc = await getImageSrc(fileName);
@@ -20,12 +21,17 @@ export default function Image(props: Props) {
     asncHandler();
   }, [fileName]);
 
+  function clickHandler() {
+    if (onClick instanceof Function) onClick();
+  }
+
   return (
     <img
       src={src}
       alt={fileName}
       className={style.standard}
       style={customStyle}
+      onClick={clickHandler}
     />
   );
 }

@@ -124,13 +124,16 @@ export async function savePiece(
     toSave.created_at = toSave.updated_at;
   }
 
-  const { pieces, images, version } = await loadAllData();
-  if (isNew) pieces.push(toSave);
+  await loadAllData();
+  if (isNew) PIECES.push(toSave);
   else {
-    const index = _.findIndex(pieces, { id: toSave.id });
-    pieces[index] = toSave;
+    const index = _.findIndex(PIECES, { id: toSave.id });
+    const numImages = PIECES[index].images.length;
+    PIECES[index] = toSave;
+    // if number of images has changed, then update all_pieces_added for all images
+    if (numImages !== toSave.images.length) await updateImagePieceCount();
   }
-  saveDataFile({ pieces, images, version });
+  saveDataFile({ pieces: PIECES, images: IMAGES, version: VERSION });
   return toSave;
 }
 
@@ -141,6 +144,31 @@ const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 export async function loadImages() {
   const resp = await loadAllData();
   return resp.images;
+}
+
+export async function loadAvailableImages() {
+  const images = await loadImages();
+  return images.filter(
+    (image) => !image.all_pieces_added && !image.is_inspiration
+  );
+}
+
+export async function updateImagePieceCount() {
+  const images: { [imgId: string]: number } = {};
+  PIECES.forEach((piece) => {
+    piece.images.forEach((fileName) => {
+      if (!images[fileName]) images[fileName] = 0;
+      images[fileName] = images[fileName] + 1;
+    });
+  });
+  IMAGES = IMAGES.map((image) => {
+    const numPieces = images[image.fileName] || 0;
+    const full = numPieces === image.number_pieces;
+    return {
+      ...image,
+      all_pieces_added: full,
+    };
+  });
 }
 
 export async function checkImageDirectory(cursor = null, dbx = getDbx()) {

@@ -1,14 +1,14 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { Button, Checkbox, DatePicker, Input, Radio, Switch } from "antd";
-import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 
-import { Piece } from "src/interfaces";
-import { loadPiece, savePiece } from "src/data";
+import Image from "src/components/image";
+import { Image as ImageInterface, Piece } from "src/interfaces";
+import { loadAvailableImages, loadPiece, savePiece } from "src/data";
 
 import style from "./piecedetail.module.css";
-import Image from "src/components/image";
 
 interface GlazeDetails {
   name: string;
@@ -74,6 +74,8 @@ export default function PieceDetails() {
   const navigate = useNavigate();
   const [piece, setPiece] = useState<Piece | null>(null);
   const [loadErr, setLoadErr] = useState<null | string>(null);
+  const [availableImages, setAvailableImages] = useState<ImageInterface[]>([]);
+  const [editingImages, setEditingImages] = useState<boolean>(false);
   const [showRaw, setShowRaw] = useState<boolean>(false);
 
   const isNewPiece: boolean = params?.pieceId === "new";
@@ -81,6 +83,10 @@ export default function PieceDetails() {
   useEffect(() => {
     loadPieceHandler();
   }, [params?.pieceId]);
+
+  useEffect(() => {
+    availableImageHandler();
+  }, [piece?.images]);
 
   async function loadPieceHandler() {
     if (isNewPiece) {
@@ -137,6 +143,7 @@ export default function PieceDetails() {
       setPieceValue(key)(e.target.value);
     };
   }
+
   function setPieceChecked(key: string) {
     return function (e: any) {
       setPieceValue(key)(e.target.checked);
@@ -165,6 +172,28 @@ export default function PieceDetails() {
       description += `${glaze.name} (#${glaze.number})`;
       setPieceValue("glaze")(description);
     };
+  }
+
+  async function availableImageHandler() {
+    const images = await loadAvailableImages();
+    const x = images.filter((img) => !piece?.images.includes(img.fileName));
+    setAvailableImages(x);
+  }
+
+  async function setPieceImages(images: string[]) {
+    setPieceValue("images")(images);
+  }
+
+  function addImage(fileName: string) {
+    return function () {
+      setPieceImages([...piece?.images, fileName]);
+    };
+  }
+
+  function removeImage(imageIndex: number) {
+    const images = [...piece.images];
+    images.splice(imageIndex, 1);
+    setPieceImages(images);
   }
 
   if (!piece) {
@@ -310,15 +339,30 @@ export default function PieceDetails() {
 
       <div>
         <h3>Images</h3>
+        <br />
+        <Button onClick={() => setEditingImages(!editingImages)}>
+          Toggle Editor
+        </Button>
         <div>
-          {piece.images.map((fileName) => (
+          {piece.images.map((fileName, index) => (
             <Image
               key={fileName}
               fileName={fileName}
               customStyle={{ margin: "0 1rem 1rem 0" }}
+              onClick={() => editingImages && removeImage(index)}
             />
           ))}
         </div>
+        {editingImages && (
+          <div>
+            <h3>Available Images</h3>
+            {availableImages.map((img) => (
+              <div key={img.fileName} onClick={addImage(img.fileName)}>
+                <Image fileName={img.fileName} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className={style.formItem}>
