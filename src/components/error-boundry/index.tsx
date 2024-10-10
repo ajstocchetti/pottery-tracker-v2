@@ -1,5 +1,6 @@
 import React from "react";
 
+// TODO: fix up this component
 // https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary
 
 export default class ErrorBoundary extends React.Component {

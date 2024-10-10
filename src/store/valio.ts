@@ -3,7 +3,7 @@ import { devtools } from "valtio/utils";
 
 interface store {
   isLoggedIn: boolean;
-  user: null | object;
+  user: null | { email: string };
   dbxInstance: null | any;
   pieceListSort: string;
   pieceListStatus: string;

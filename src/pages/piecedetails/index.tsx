@@ -102,7 +102,9 @@ export default function PieceDetails() {
   async function loadPieceHandler() {
     if (isNewPiece) {
       setPiece({
-        id: null,
+        id: "",
+        created_at: new Date(),
+        updated_at: new Date(),
         date_thrown: dayjs().format("YYYY-MM-DD"),
         date_trimmed: null,
         date_to_bisque: null,
@@ -112,8 +114,9 @@ export default function PieceDetails() {
         is_abandoned: false,
         form_type: "OTHER",
         clay_type: "OTHER",
-        is_handbuild: false,
+        is_handbuilt: false,
         notes: "",
+        glaze: "",
         fate: "",
         status: "NEEDS_TRIMMING",
         weight: "",
