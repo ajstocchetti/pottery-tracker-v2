@@ -35,7 +35,7 @@ function blobToText(blob: any) {
   });
 }
 
-async function loadAllData(): Promise<DbxData> {
+export async function loadAllData(): Promise<DbxData> {
   const now = Date.now();
   if (now - DATA_LAST_LOADED < JSON_CACHE_TIMEOUT_MS) {
     console.debug("using cached json file");
@@ -71,6 +71,14 @@ async function saveDataFile(data: DbxData) {
   IMAGES = data.images;
   VERSION = data.version;
   DATA_LAST_LOADED = now;
+}
+
+export function saveData() {
+  return saveDataFile({
+    pieces: PIECES,
+    images: IMAGES,
+    version: VERSION,
+  });
 }
 
 export function clearDbxCache() {
@@ -133,7 +141,7 @@ export async function savePiece(
     // if number of images has changed, then update all_pieces_added for all images
     if (numImages !== toSave.images.length) await updateImagePieceCount();
   }
-  saveDataFile({ pieces: PIECES, images: IMAGES, version: VERSION });
+  await saveData();
   return toSave;
 }
 
@@ -202,11 +210,7 @@ export async function checkImageDirectory(cursor = null, dbx = getDbx()) {
   if (resp.result.has_more) {
     return checkImageDirectory(resp.result.cursor, dbx);
   } else {
-    saveDataFile({
-      pieces: PIECES,
-      images: IMAGES,
-      version: VERSION,
-    });
+    saveData();
   }
 }
 

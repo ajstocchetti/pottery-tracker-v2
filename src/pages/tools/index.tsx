@@ -1,6 +1,12 @@
 import { Button } from "antd";
 import { useEffect, useState } from "react";
-import { checkImageDirectory, loadImages } from "src/data";
+import {
+  checkImageDirectory,
+  loadAllData,
+  loadImages,
+  saveData,
+  updateImagePieceCount,
+} from "src/data";
 import { Image } from "src/interfaces";
 
 export default function Tools() {
@@ -10,6 +16,7 @@ export default function Tools() {
     const imgs = await loadImages();
     setImages(imgs);
   }
+
   useEffect(() => {
     imgAsyncHandler();
   }, []);
@@ -19,10 +26,16 @@ export default function Tools() {
     imgAsyncHandler();
   }
 
+  async function imagePieceCountHandler() {
+    await updateImagePieceCount();
+    await saveData();
+  }
+
   return (
-    <div>
-      {/* <Button>Load from Dropbox</Button> */}
-      {/* <Button>Save to Dropbox</Button> */}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <Button onClick={loadAllData}>Load from Dropbox</Button>
+      <Button onClick={saveData}>Save to Dropbox</Button>
+      <Button onClick={imagePieceCountHandler}>Set Image Count Full</Button>
       <Button onClick={checkImagesHandler}>Check for images</Button>
       <div>
         <label>Number of images: </label>
