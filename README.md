@@ -1,9 +1,9 @@
 # TODOs
 
-0. file name standardization: multi-word.tsx vs multiWord.tsx
-1. button styling
-2. delete images
-3. image -> piece (image <-> piece) reference
+0. delete piece functionality
+1. image -> piece (image <-> piece) reference
+2. file name standardization: multi-word.tsx vs multiWord.tsx
+3. button styling
 
 # Dropbox API Resources
 

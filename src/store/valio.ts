@@ -7,6 +7,7 @@ interface store {
   dbxInstance: null | any;
   pieceListSort: string;
   pieceListStatus: string;
+  imageListFilter: string;
 }
 
 export const initialStore: store = {
@@ -15,6 +16,7 @@ export const initialStore: store = {
   dbxInstance: null,
   pieceListSort: "updated_at",
   pieceListStatus: "NEEDS_TRIMMING",
+  imageListFilter: "NEED_PIECES",
 };
 
 export const state = proxy(initialStore);

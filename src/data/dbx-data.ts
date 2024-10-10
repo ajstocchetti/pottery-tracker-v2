@@ -149,9 +149,26 @@ export async function savePiece(
 
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 
-export async function loadImages(): Promise<Image[]> {
+export async function loadImages(filterType: string): Promise<Image[]> {
   const resp = await loadAllData();
-  return _.sortBy(resp.images, "created_at");
+  let images = resp.images;
+  switch (filterType) {
+    case "NEED_PIECES":
+      images = images.filter(
+        (img) => !img.is_inspiration && !img.all_pieces_added
+      );
+      break;
+    case "FULL":
+      images = images.filter(
+        (img) => !img.is_inspiration && img.all_pieces_added
+      );
+      break;
+    case "INSPIRATION":
+      images = images.filter((img) => img.is_inspiration);
+      break;
+  }
+
+  return _.sortBy(images, "created_at");
 }
 
 export async function loadAvailableImages() {
