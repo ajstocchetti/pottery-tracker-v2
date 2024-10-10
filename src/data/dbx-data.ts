@@ -243,10 +243,7 @@ export async function deleteImage(fileName: string) {
     const fullName = fullPath(fileName);
     await getDbx().filesDeleteV2({ path: fullName });
     await loadAllData();
-    const imageIndex = _.findIndex(IMAGES, { fileName: fileName });
-    if (imageIndex !== -1) {
-      IMAGES.splice(imageIndex, 1);
-    }
+    _.remove(IMAGES, { fileName });
     PIECES.forEach((piece) => {
       piece.images = piece.images.filter((fn) => fn !== fileName);
     });
