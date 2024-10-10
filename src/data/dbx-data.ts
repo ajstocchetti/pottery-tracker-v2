@@ -146,10 +146,13 @@ export async function savePiece(
 }
 
 /* IMAGES */
+let imageSrcTimeoutCount = 0;
 
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 
-export async function loadImages(filterType: string): Promise<Image[]> {
+export async function loadImages(
+  filterType: string = "NEED_PIECES"
+): Promise<Image[]> {
   const resp = await loadAllData();
   let images = resp.images;
   switch (filterType) {
@@ -166,6 +169,10 @@ export async function loadImages(filterType: string): Promise<Image[]> {
     case "INSPIRATION":
       images = images.filter((img) => img.is_inspiration);
       break;
+    case "ALL":
+      break;
+    default:
+      console.warn(`Unknown image list filter option ${filterType}`);
   }
 
   return _.sortBy(images, "created_at");
@@ -302,11 +309,16 @@ export async function getImageSrc(fileName: string) {
     const src = await getDbx().filesGetTemporaryLink({
       path: fullPath(fileName),
     });
+    imageSrcTimeoutCount = 0; // reset error count on success
     const link = src?.result?.link;
     if (link) IMAGE_SRC[fileName] = link;
     return link;
   } catch (err) {
     console.error("Error loading image content");
     console.error(err);
+    // TODO: only retry if its a HTTP 409 error
+    setTimeout(() => {
+      getImageSrc(fileName);
+    }, 300 * ++imageSrcTimeoutCount);
   }
 }
