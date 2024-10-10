@@ -8,6 +8,7 @@ import Image from "src/components/image";
 import { Image as ImageInterface, Piece } from "src/interfaces";
 import { loadAvailableImages, loadPiece, savePiece } from "src/data";
 
+import ImageList from "./image-list";
 import style from "./piecedetail.module.css";
 
 interface GlazeDetails {
@@ -190,12 +191,6 @@ export default function PieceDetails() {
     };
   }
 
-  function removeImage(imageIndex: number) {
-    const images = [...piece.images];
-    images.splice(imageIndex, 1);
-    setPieceImages(images);
-  }
-
   if (!piece) {
     if (!loadErr) return <p>Loading...</p>;
     else
@@ -339,20 +334,14 @@ export default function PieceDetails() {
 
       <div>
         <h3>Images</h3>
-        <br />
+        <ImageList
+          images={piece.images}
+          onListChange={setPieceImages}
+          editing={editingImages}
+        />
         <Button onClick={() => setEditingImages(!editingImages)}>
           Toggle Editor
         </Button>
-        <div>
-          {piece.images.map((fileName, index) => (
-            <Image
-              key={fileName}
-              fileName={fileName}
-              customStyle={{ margin: "0 1rem 1rem 0" }}
-              onClick={() => editingImages && removeImage(index)}
-            />
-          ))}
-        </div>
         {editingImages && (
           <div>
             <h3>Available Images</h3>

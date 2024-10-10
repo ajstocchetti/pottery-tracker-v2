@@ -5,3 +5,7 @@
 div.formItem > label {
   margin-right: 5px;
 }
+
+.imageListItem {
+  margin: 0 1rem 1rem 0;
+}
