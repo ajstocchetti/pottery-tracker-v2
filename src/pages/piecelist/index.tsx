@@ -1,4 +1,4 @@
-import { Button, Select } from "antd";
+import { Button, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
@@ -31,11 +31,12 @@ const sortOptions: SelectOptions = [
 
 export function PieceList({}) {
   const [pieces, setPieces] = useState<Piece[]>([]);
+  const [textFilter, setTextFilter] = useState<string>("");
   const { pieceListSort, pieceListStatus } = useSnapshot(state);
 
   useEffect(() => {
     loadPiecesHandler();
-  }, [pieceListStatus, pieceListSort]);
+  }, [pieceListStatus, pieceListSort, textFilter]);
 
   function setSort(sortValue: string) {
     state.pieceListSort = sortValue;
@@ -62,8 +63,12 @@ export function PieceList({}) {
   }
 
   async function loadPiecesHandler() {
-    const pieces = await loadPieces(pieceListSort, pieceListStatus);
+    const pieces = await loadPieces(pieceListSort, pieceListStatus, textFilter);
     if (pieces) setPieces(pieces);
+  }
+
+  function textFilterHandler(e) {
+    setTextFilter(e.target.value);
   }
 
   return (
@@ -86,6 +91,12 @@ export function PieceList({}) {
           value={pieceListSort}
           onChange={setSort}
           options={sortOptions}
+        />
+        <Input
+          placeholder="Filter"
+          value={textFilter}
+          allowClear
+          onChange={textFilterHandler}
         />
       </div>
       {pieces.map((piece) => (
