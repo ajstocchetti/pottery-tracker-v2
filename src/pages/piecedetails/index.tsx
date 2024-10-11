@@ -89,8 +89,6 @@ export default function PieceDetails() {
   const [editingImages, setEditingImages] = useState<boolean>(false);
   const [showRaw, setShowRaw] = useState<boolean>(false);
 
-  const isNewPiece: boolean = params?.pieceId === "new";
-
   useEffect(() => {
     loadPieceHandler();
   }, [params?.pieceId]);
@@ -100,30 +98,6 @@ export default function PieceDetails() {
   }, [piece?.images]);
 
   async function loadPieceHandler() {
-    if (isNewPiece) {
-      setPiece({
-        id: "",
-        created_at: new Date(),
-        updated_at: new Date(),
-        date_thrown: dayjs().format("YYYY-MM-DD"),
-        date_trimmed: null,
-        date_to_bisque: null,
-        date_to_glaze: null,
-        returned_from_bisque: false,
-        returned_from_glaze: false,
-        is_abandoned: false,
-        form_type: "OTHER",
-        clay_type: "OTHER",
-        is_handbuilt: false,
-        notes: "",
-        glaze: "",
-        fate: "",
-        status: "NEEDS_TRIMMING",
-        weight: "",
-        images: [],
-      });
-      return;
-    }
     try {
       const piece = await loadPiece(params?.pieceId);
       if (piece) setPiece(piece);
@@ -143,12 +117,8 @@ export default function PieceDetails() {
   }
 
   async function savePieceHandler(piece: Piece) {
-    const updated = await savePiece(piece, isNewPiece);
-    if (updated) {
-      if (isNewPiece) {
-        navigate(`/pieces/${updated.id}`);
-      } else setPiece(updated);
-    }
+    const updated = await savePiece(piece);
+    if (updated) setPiece(updated);
   }
 
   const debounceSave = useMemo(() => _.debounce(savePieceHandler, 1000), []);
@@ -401,7 +371,7 @@ export default function PieceDetails() {
         cancelText="Cancel"
         icon={<DeleteOutlined />}
       >
-        <Button color="danger" variant="filled" disabled={isNewPiece}>
+        <Button color="danger" variant="filled">
           Delete Piece
         </Button>
       </Popconfirm>

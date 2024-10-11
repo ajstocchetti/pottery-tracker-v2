@@ -70,7 +70,7 @@ export function PieceList({}) {
       <div className={style.pieceListOptions}>
         <div>
           {/* the div is for styling */}
-          <Link to="/pieces/new">
+          <Link to="/newpiece">
             <Button type="primary" block>
               New Piece
             </Button>

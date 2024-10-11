@@ -2,9 +2,10 @@
 
 0. delete piece functionality
 1. image load retry
-2. image -> piece (image <-> piece) reference
-3. file name standardization: multi-word.tsx vs multiWord.tsx
-4. button styling
+1. 404 page
+1. image -> piece (image <-> piece) reference
+1. file name standardization: multi-word.tsx vs multiWord.tsx
+1. button styling
 
 # Dropbox API Resources
 
