@@ -3,29 +3,30 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { loadPieces } from "src/data";
-import { Piece } from "src/interfaces";
+import { Piece, SelectOptions } from "src/interfaces";
 import { state } from "src/store/valio";
 import { PieceCard } from "./pieceCard";
 import style from "./piecelist.module.css";
 
-const statusTypes: string[] = [
-  "NEEDS_TRIMMING",
-  "DRYING_OUT",
-  "AT_BISQUE",
-  "NEEDS_GLAZE",
-  "AT_GLAZE",
-  "COMPLETE",
-  "ABANDONED",
-  "ALL",
+const statusTypes: SelectOptions = [
+  { label: "Needs Trimming", value: "NEEDS_TRIMMING" },
+  { label: "Drying Out", value: "DRYING_OUT" },
+  { label: "At Bisque", value: "AT_BISQUE" },
+  { label: "Needs Glaze", value: "NEEDS_GLAZE" },
+  { label: "At Glaze", value: "AT_GLAZE" },
+  { label: "Complete", value: "COMPLETE" },
+  { label: "Abandoned", value: "ABANDONED" },
+  { label: "All Pieces", value: "ALL" },
 ];
-const sortOptions: string[] = [
-  "notes",
-  "date_thrown",
-  "date_trimmed",
-  "date_to_bisque",
-  "date_to_glaze",
-  "created_at",
-  "updated_at",
+
+const sortOptions: SelectOptions = [
+  { label: "Thrown", value: "date_thrown" },
+  { label: "Trimmed", value: "date_trimmed" },
+  { label: "To Bisque", value: "date_to_bisque" },
+  { label: "To Glaze", value: "date_to_glaze" },
+  { label: "Created", value: "created_at" },
+  { label: "Updated", value: "updated_at" },
+  { label: "Notes", value: "notes" },
 ];
 
 export function PieceList({}) {
@@ -76,20 +77,16 @@ export function PieceList({}) {
             </Button>
           </Link>
         </div>
-        <Select value={pieceListStatus} onChange={setStatus}>
-          {statusTypes.map((status) => (
-            <Select.Option value={status} key={status}>
-              {status}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select value={pieceListSort} onChange={setSort}>
-          {sortOptions.map((sorter) => (
-            <Select.Option value={sorter} key={sorter}>
-              {sorter}
-            </Select.Option>
-          ))}
-        </Select>
+        <Select
+          value={pieceListStatus}
+          onChange={setStatus}
+          options={statusTypes}
+        />
+        <Select
+          value={pieceListSort}
+          onChange={setSort}
+          options={sortOptions}
+        />
       </div>
       {pieces.map((piece) => (
         <PieceCard

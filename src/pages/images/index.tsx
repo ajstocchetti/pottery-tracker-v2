@@ -2,11 +2,11 @@ import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { loadImages, saveImage } from "src/data";
-import { Image } from "src/interfaces";
+import { Image, SelectOptions } from "src/interfaces";
 import { state } from "src/store/valio";
 import ImageCard from "./image-card";
 
-const filterOptions: { label: string; value: string }[] = [
+const filterOptions: SelectOptions = [
   { label: "Need Pieces", value: "NEED_PIECES" },
   { label: "All Pieces Set", value: "FULL" },
   { label: "Inspiration", value: "INSPIRATION" },
