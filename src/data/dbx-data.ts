@@ -194,6 +194,7 @@ export async function uploadImage(fileInfo: File, pieceId: string) {
       contents: fileInfo,
       autorename: true, // have dropbox rename if file exists
       mute: true,
+      strict_conflict: true,
     });
 
     const fileName = resp.result.name;
