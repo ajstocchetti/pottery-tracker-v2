@@ -4,7 +4,7 @@ import { snapshot } from "valtio";
 import { dataFilePath, imagesDir } from "src/config";
 import { state } from "src/store/valio";
 import { Image, Piece } from "src/interfaces";
-import { transform } from "./dbxTransforms";
+import { transform } from "./dbx-transforms";
 
 const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
 let PIECES: Piece[] = [];

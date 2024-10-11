@@ -29,7 +29,7 @@ const sortOptions: SelectOptions = [
   { label: "Notes", value: "notes" },
 ];
 
-export function PieceList({}) {
+export default function PieceList({}) {
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [textFilter, setTextFilter] = useState<string>("");
   const { pieceListSort, pieceListStatus } = useSnapshot(state);

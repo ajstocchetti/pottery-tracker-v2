@@ -1,7 +1,7 @@
 import { InputNumber, Switch } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import DeleteImageButton from "src/components/imageDelete";
+import DeleteImageButton from "src/components/image-delete-button";
 import { getPiecesForImage } from "src/data";
 import Image from "src/components/image";
 import { Image as ImageInterface } from "src/interfaces";

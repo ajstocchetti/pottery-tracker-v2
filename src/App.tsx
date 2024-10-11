@@ -5,9 +5,9 @@ import DropboxUserLogin from "src/pages/login-dropbox";
 import Header from "src/components/header";
 import ErrorBoundary from "src/components/error-boundry";
 import Images from "src/pages/images";
-import NewPiece from "src/pages/piece-new/new-piece";
-import PieceDetails from "src/pages/piecedetails";
-import { PieceList } from "src/pages/piecelist";
+import NewPiece from "src/pages/piece-new";
+import PieceDetails from "src/pages/piece-details";
+import PieceList from "src/pages/piece-list";
 import Tools from "src/pages/tools";
 import "./App.css";
 

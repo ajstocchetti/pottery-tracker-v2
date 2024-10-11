@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 
-import AddImageButton from "src/components/addImageButton";
+import AddImageButton from "src/components/image-add-button";
 import Image from "src/components/image";
 import { Image as ImageInterface, Piece } from "src/interfaces";
 import { deletePiece, loadImages, loadPiece, savePiece } from "src/data";

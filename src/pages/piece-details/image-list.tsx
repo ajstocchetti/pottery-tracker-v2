@@ -1,5 +1,5 @@
 import { Button, Popconfirm } from "antd";
-import DeleteImageButton from "src/components/imageDelete";
+import DeleteImageButton from "src/components/image-delete-button";
 import Image from "src/components/image";
 import style from "./piecedetail.module.css";
 
