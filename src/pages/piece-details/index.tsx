@@ -83,7 +83,7 @@ function getFormatDate(dateValue: string | null) {
 export default function PieceDetails() {
   const params = useParams();
   const navigate = useNavigate();
-  const [piece, setPiece] = useState<Piece | null>(null);
+  const [piece, setPiece] = useState<Piece>();
   const [loadErr, setLoadErr] = useState<null | string>(null);
   const [availableImages, setAvailableImages] = useState<ImageInterface[]>([]);
   const [editingImages, setEditingImages] = useState<boolean>(false);
@@ -99,9 +99,12 @@ export default function PieceDetails() {
 
   async function loadPieceHandler() {
     try {
-      const piece = await loadPiece(params?.pieceId);
-      if (piece) setPiece(piece);
-    } catch (err) {
+      const pieceId = params?.pieceId;
+      if (pieceId) {
+        const piece = await loadPiece(pieceId);
+        if (piece) setPiece(piece);
+      } else throw new Error("No id in url");
+    } catch (err: any) {
       setLoadErr(err);
     }
   }
@@ -112,7 +115,8 @@ export default function PieceDetails() {
   }
 
   async function deleteClickHandler() {
-    await deletePiece(piece?.id);
+    if (!piece) return;
+    await deletePiece(piece.id);
     navigate("/");
   }
 
@@ -134,6 +138,7 @@ export default function PieceDetails() {
 
   function setPieceEvtTarget(key: string) {
     return function (e: any) {
+      // e: React.ChangeEventHandler<HTMLInputElement> | React.ChangeEventHandler<HTMLTextAreaElement>
       setPieceValue(key)(e.target.value);
     };
   }
@@ -151,15 +156,16 @@ export default function PieceDetails() {
     };
   }
 
-  function toggleKey(key: string) {
+  function toggleKey(key: keyof Piece) {
     return function () {
+      if (!piece) return;
       setPieceValue(key)(!piece[key]);
     };
   }
 
   function glazeBtnClick(glaze: GlazeDetails) {
     return function () {
-      let description = piece.glaze;
+      let description = piece?.glaze;
       if (description && description[description.length - 1] !== " ") {
         description += " ";
       }
@@ -179,8 +185,9 @@ export default function PieceDetails() {
   }
 
   function addImage(fileName: string) {
+    if (!piece) return;
     return function () {
-      setPieceImages([...piece?.images, fileName]);
+      setPieceImages([...piece.images, fileName]);
     };
   }
 

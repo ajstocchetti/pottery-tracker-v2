@@ -7,7 +7,7 @@ all: build deploy
 full: build prunes3 deploy cache
 
 build:
-	npm run build-ignore-ts
+	npm run build
 
 deploy:
 	aws s3 cp --recursive dist s3://$(BUCKET)

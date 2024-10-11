@@ -28,6 +28,7 @@ export function dbxLogin(dbxInstance: any, account: any) {
 export function logout() {
   clearDbxCache();
   clearLoginCookie();
+  // @ts-expect-error
   Object.entries(initialStore).forEach(([key, val]) => (state[key] = val));
   window.location.assign("/");
 }

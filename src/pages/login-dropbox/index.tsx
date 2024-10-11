@@ -5,11 +5,13 @@ import { getLoginCookie, dbxLogin, logout, setLoginCookie } from "src/auth";
 import { authCallbackUrl, dbxClientId } from "src/config.ts";
 
 const DropboxUserLogin = () => {
-  const [authUrl, setAuthUrl] = useState<string | null>(null);
+  const [authUrl, setAuthUrl] = useState<string | undefined>(undefined);
 
   async function generateLoginUrl() {
     const dbx = new Dropbox({ clientId: dbxClientId });
     try {
+      // Dropbox.auth does exist, their type is wrong. Or I'm importing something wrong.
+      // @ts-expect-error
       const url: string = await dbx.auth.getAuthenticationUrl(authCallbackUrl);
       setAuthUrl(url);
     } catch (err) {

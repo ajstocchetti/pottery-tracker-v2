@@ -14,7 +14,7 @@ interface Props {
 
 interface StdLabeledDataProps {
   label: string;
-  value: string;
+  value: string | null;
 }
 const StdLabeledData = (props: StdLabeledDataProps) => (
   <div>

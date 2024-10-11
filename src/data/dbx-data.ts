@@ -38,6 +38,7 @@ function getDbx() {
 function blobToText(blob: any): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
+    // @ts-expect-error
     reader.onload = (e) => resolve(e.target.result);
     reader.onerror = (e) => reject(e);
     reader.readAsText(blob);
@@ -171,6 +172,10 @@ export async function deletePiece(pieceId: string) {
 }
 
 /* IMAGES */
+interface FilesListFolderResultEntry {
+  // TODO: load FilesListFolderResultEntry from Dropbox
+  name: string;
+}
 let imageSrcTimeoutCount = 0;
 
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
@@ -301,7 +306,7 @@ export async function checkImageDirectory(cursor = null, dbx = getDbx()) {
   }
 
   const resp = await func;
-  resp.result.entries.forEach((img) => {
+  resp.result.entries.forEach((img: FilesListFolderResultEntry) => {
     if (_.findIndex(IMAGES, { fileName: img.name }) === -1) {
       // image not in store, add image
       const fileName = img.name;
@@ -333,7 +338,7 @@ export async function getImageSrc(fileName: string, retryCount = 0) {
     const link = src?.result?.link;
     if (link) IMAGE_SRC[fileName] = link;
     return link;
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error loading image content");
     console.error(err);
     // The error thrown doesn't really match the dropbox documentation and its shape is inconsistent

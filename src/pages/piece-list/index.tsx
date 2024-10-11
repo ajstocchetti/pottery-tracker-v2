@@ -67,7 +67,7 @@ export default function PieceList({}) {
     if (pieces) setPieces(pieces);
   }
 
-  function textFilterHandler(e) {
+  function textFilterHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setTextFilter(e.target.value);
   }
 

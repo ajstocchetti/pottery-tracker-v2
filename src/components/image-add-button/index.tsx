@@ -10,7 +10,8 @@ interface Props {
 export function fileToUrl(file: File): Promise<string> {
   return new Promise((res, rej) => {
     const reader = new FileReader();
-    reader.onload = (e) => res(e.target.result);
+    // @ts-expect-error
+    reader.onload = (e: ProgressEvent<FileReader>) => res(e.target.result);
     reader.onerror = (e) => rej(e);
     reader.readAsDataURL(file);
   });
@@ -23,7 +24,7 @@ export default function AddImageButton(props: Props) {
   const [imgUrl, setImgUrl] = useState<string>("");
   const [saving, setSaving] = useState<boolean>(false);
 
-  async function onFileChange(e) {
+  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length) {
       setImg(e.target.files[0]);
       const url = await fileToUrl(e.target.files[0]);
@@ -34,9 +35,10 @@ export default function AddImageButton(props: Props) {
     }
   }
 
-  async function onSubmit(e) {
+  async function onSubmit(e: React.MouseEvent<HTMLElement, MouseEvent>) {
     e.stopPropagation();
     e.preventDefault();
+    if (!img) return;
     setSaving(true);
     await uploadImage(img, pieceId);
     setSaving(false);
