@@ -305,7 +305,7 @@ export async function checkImageDirectory(cursor = null, dbx = getDbx()) {
   }
 }
 
-export async function getImageSrc(fileName: string) {
+export async function getImageSrc(fileName: string, retryCount = 0) {
   if (IMAGE_SRC[fileName]) return IMAGE_SRC[fileName];
   try {
     const src = await getDbx().filesGetTemporaryLink({
@@ -318,9 +318,16 @@ export async function getImageSrc(fileName: string) {
   } catch (err) {
     console.error("Error loading image content");
     console.error(err);
-    // TODO: only retry if its a HTTP 409 error
-    setTimeout(() => {
-      getImageSrc(fileName);
-    }, 300 * ++imageSrcTimeoutCount);
+    // The error thrown doesn't really match the dropbox documentation and its shape is inconsistent
+    // only want to retry if we get a 429 (too many requests), which looks like a "TypeError"
+    if (err.status === 409) {
+      return; // image not found. should consider removing image from IMAGES
+    }
+    if (err.name === "TypeError" && retryCount < 3) {
+      // the error coming back
+      setTimeout(() => {
+        getImageSrc(fileName, ++retryCount);
+      }, 300 * ++imageSrcTimeoutCount);
+    }
   }
 }
