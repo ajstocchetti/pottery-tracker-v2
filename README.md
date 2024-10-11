@@ -1,11 +1,12 @@
 # TODOs
 
-0. delete piece functionality
-1. image load retry
-1. 404 page
-1. image -> piece (image <-> piece) reference
-1. file name standardization: multi-word.tsx vs multiWord.tsx
-1. button styling
+- [x] delete piece functionality
+- [x] image load retry
+- [ ] 404 page
+- [ ] style nav bar (for full screen)
+- [x] image -> piece (image <-> piece) reference
+- [ ] file name standardization: multi-word.tsx vs multiWord.tsx
+- [ ] button styling
 
 # Dropbox API Resources
 
