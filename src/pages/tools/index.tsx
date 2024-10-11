@@ -4,6 +4,7 @@ import {
   checkImageDirectory,
   loadAllData,
   loadImages,
+  logData,
   saveData,
   updateImagePieceCount,
 } from "src/data";
@@ -35,6 +36,7 @@ export default function Tools() {
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Button onClick={loadAllData}>Load from Dropbox</Button>
       <Button onClick={saveData}>Save to Dropbox</Button>
+      <Button onClick={logData}>Log Data</Button>
       <Button onClick={imagePieceCountHandler}>Set Image Count Full</Button>
       <Button onClick={checkImagesHandler}>Check for images</Button>
       <div>

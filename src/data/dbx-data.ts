@@ -20,6 +20,14 @@ interface DbxData {
   version: number;
 }
 
+export function logData() {
+  console.log({
+    pieces: PIECES,
+    images: IMAGES,
+    version: VERSION,
+  });
+}
+
 /* DROPBOX */
 
 function getDbx() {
