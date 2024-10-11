@@ -6,6 +6,7 @@ import Header from "src/components/header";
 import ErrorBoundary from "src/components/error-boundry";
 import Images from "src/pages/images";
 import NewPiece from "src/pages/piece-new";
+import NotFound from "src/pages/not-found";
 import PieceDetails from "src/pages/piece-details";
 import PieceList from "src/pages/piece-list";
 import Tools from "src/pages/tools";
@@ -23,11 +24,12 @@ function App() {
           <Header />
           <div id="mainContent">
             <Routes>
-              <Route exact path="/" Component={PieceList} />
+              <Route path="/" Component={PieceList} />
               <Route path="pieces/:pieceId" Component={PieceDetails} />
               <Route path="newpiece" Component={NewPiece} />
               <Route path="images" Component={Images} />
               <Route path="tools" Component={Tools} />
+              <Route path="*" Component={NotFound} />
             </Routes>
           </div>
         </>

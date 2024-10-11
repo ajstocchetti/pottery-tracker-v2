@@ -1,12 +1,14 @@
 # TODOs
 
+- [ ] get cloudfront non "/" urls to work (or use hash based routing? gross)
+- [ ] style nav bar (for full screen)
+- [ ] button styling
+- [ ] image order drag-and-drop
+- [x] 404 page
 - [x] delete piece functionality
 - [x] image load retry
-- [ ] 404 page
-- [ ] style nav bar (for full screen)
 - [x] image -> piece (image <-> piece) reference
-- [ ] file name standardization: multi-word.tsx vs multiWord.tsx
-- [ ] button styling
+- [x] file name standardization: multi-word.tsx vs multiWord.tsx
 
 # Dropbox API Resources
 
