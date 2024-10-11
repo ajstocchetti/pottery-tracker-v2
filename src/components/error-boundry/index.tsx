@@ -1,34 +1,41 @@
-import React from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
 
-// TODO: fix up this component
 // https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary
+// https://stackoverflow.com/a/78132377
 
-export default class ErrorBoundary extends React.Component {
-  constructor(props: any) {
-    super(props);
-    this.state = { hasError: false };
-  }
+interface Props {
+  children: ReactNode;
+}
 
-  static getDerivedStateFromError(error) {
+interface State {
+  hasError: boolean;
+  error: Error | null;
+}
+
+export default class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+    error: null,
+  };
+
+  public static getDerivedStateFromError(err: Error): State {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true };
+    return { hasError: true, error: err };
   }
 
-  componentDidCatch(error, info) {
-    // Example "componentStack":
-    //   in ComponentThatThrows (created by App)
-    //   in ErrorBoundary (created by App)
-    //   in div (created by App)
-    //   in App
-    console.error("Error in react");
-    // console.error(error);
-    // console.error(info.componentStack);
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("Uncaught error:", error, errorInfo);
   }
 
-  render() {
+  public render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return this.props.fallback;
+      return (
+        <div style={{ margin: "0 auto" }}>
+          <h2>Something went wrong</h2>
+          <p>Error: {this.state.error?.toString()}</p>
+          <p>See console for details</p>
+        </div>
+      );
     }
 
     return this.props.children;

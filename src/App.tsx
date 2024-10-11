@@ -17,7 +17,7 @@ function App() {
   if (!isLoggedIn) return <DropboxUserLogin />;
 
   return (
-    <ErrorBoundary fallback={<p>Something went wrong</p>}>
+    <ErrorBoundary>
       <BrowserRouter>
         <>
           <Header />
