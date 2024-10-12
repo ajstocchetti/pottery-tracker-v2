@@ -9,7 +9,7 @@ import { transform } from "./dbx-transforms";
 const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
 let PIECES: Piece[] = [];
 let IMAGES: Image[] = [];
-let VERSION: number = 3;
+let VERSION: number = 4;
 let DATA_LAST_LOADED: number = 0;
 const IMAGE_SRC: { [fileName: string]: unknown } = {};
 let IMAGE_PIECES: { [imgId: string]: string[] } = {};

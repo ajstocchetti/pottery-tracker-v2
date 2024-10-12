@@ -15,7 +15,24 @@ interface DbxData {
 export function transform(data: DbxData) {
   if (data.version < 2) data = toTwo(data);
   if (data.version < 3) data = toThree(data);
+  if (data.version < 4) data = toFour(data);
   return data;
+}
+
+function toFour(data: DbxData): DbxData {
+  const pieces: Piece[] = data.pieces.map((piece) => {
+    const p = { ...piece };
+    p.clay_type = p.clay_type.toUpperCase();
+    if (p.clay_type === "B-CLAY") p.clay_type = "B_CLAY";
+    if (p.clay_type === "WHITE-STONEWARE") p.clay_type = "WHITE_STONEWARE";
+    p.form_type = p.form_type.toUpperCase();
+    return p;
+  });
+  return {
+    pieces: pieces,
+    images: data.images,
+    version: 4,
+  };
 }
 
 function toThree(data: DbxDataIn): DbxData {
