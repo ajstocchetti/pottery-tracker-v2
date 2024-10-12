@@ -111,14 +111,6 @@ export function PieceCard(props: Props) {
                     <CloseCircleOutlined />
                   )}
                 </div>
-                <div>
-                  <label>Abandoned: </label>
-                  {piece.is_abandoned ? (
-                    <CheckCircleOutlined />
-                  ) : (
-                    <CloseCircleOutlined />
-                  )}
-                </div>
                 <StdLabeledData label="Id" value={piece.id} />
               </div>
             ),
