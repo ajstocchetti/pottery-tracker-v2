@@ -98,6 +98,7 @@ export default function PieceList({}) {
           allowClear
           onChange={textFilterHandler}
         />
+        <span>{pieces.length} pieces</span>
       </div>
       {pieces.map((piece) => (
         <PieceCard
