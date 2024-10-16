@@ -125,7 +125,7 @@ export default function PieceDetails() {
     if (updated) setPiece(updated);
   }
 
-  const debounceSave = useMemo(() => _.debounce(savePieceHandler, 1000), []);
+  const debounceSave = useMemo(() => _.debounce(savePieceHandler, 4000), []);
 
   function setPieceValue(key: string) {
     return function (value: any) {
