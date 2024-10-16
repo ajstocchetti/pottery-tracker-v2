@@ -1,8 +1,9 @@
-import { Button, Collapse, Popconfirm } from "antd";
+import { Collapse } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Piece } from "src/interfaces";
 import { savePiece } from "src/data";
+import AdvanceStatus from "./advanceStatus";
 import styles from "./pieceCard.module.css";
 import Thumbnail from "./thumbnail";
 
@@ -45,32 +46,10 @@ export function PieceCard(props: Props) {
 
   const statusDate = getStatusDate(piece);
 
-  async function markBackFromKiln() {
-    if (!["AT_BISQUE", "AT_GLAZE"].includes(piece.status)) {
-      return;
-    }
-    const updateKey =
-      piece.status === "AT_BISQUE"
-        ? "returned_from_bisque"
-        : "returned_from_glaze";
-    const resp = await savePiece({ ...piece, [updateKey]: true });
+  async function statusUpdateHandler(update: object | null) {
+    if (!update) return;
+    const resp = await savePiece({ ...piece, ...update });
     if (resp) props.onUpdate();
-  }
-
-  let backFromKilnButton = null;
-  if (piece.status === "AT_BISQUE" || piece.status === "AT_GLAZE") {
-    const kilnType: string = piece.status === "AT_BISQUE" ? "Bisque" : "Glaze";
-    backFromKilnButton = (
-      <Popconfirm
-        title="Back From Kiln"
-        description={`Confirm that piece is back from ${kilnType}`}
-        onConfirm={markBackFromKiln}
-        okText="Confirm"
-        cancelText="Cancel"
-      >
-        <Button>Back from {kilnType}</Button>
-      </Popconfirm>
-    );
   }
 
   return (
@@ -81,7 +60,7 @@ export function PieceCard(props: Props) {
           <Thumbnail fileName={piece.images[0]} />
         </Link>
       </div>
-      {backFromKilnButton}
+      <AdvanceStatus status={piece.status} update={statusUpdateHandler} />
       <StdLabeledData label="Form" value={piece.form_type} />
       <StdLabeledData label="Clay" value={piece.clay_type} />
       <StdLabeledData label="Notes" value={piece.notes} />
