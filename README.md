@@ -1,6 +1,7 @@
 # TODOs
 
 - [ ] refresh data from dbx when page gains focus (from other tab, etc)
+- [ ] make piece status an enum (and clay, form?)
 - [ ] get cloudfront non "/" urls to work (or use hash based routing? gross)
 - [ ] style nav bar (for full screen)
 - [ ] button styling

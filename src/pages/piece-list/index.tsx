@@ -48,7 +48,7 @@ export default function PieceList({}) {
       case "NEEDS_TRIMMING":
         setSort("date_thrown");
         break;
-      case "DRTING_OUT":
+      case "DRYING_OUT":
         setSort("date_trimmed");
         break;
       case "AT_BISQUE":
