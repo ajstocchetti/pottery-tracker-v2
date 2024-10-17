@@ -20,12 +20,18 @@ const statusTypes: SelectOptions = [
 ];
 
 const sortOptions: SelectOptions = [
-  { label: "Thrown", value: "date_thrown" },
-  { label: "Trimmed", value: "date_trimmed" },
-  { label: "To Bisque", value: "date_to_bisque" },
-  { label: "To Glaze", value: "date_to_glaze" },
-  { label: "Created", value: "created_at" },
-  { label: "Updated", value: "updated_at" },
+  { label: "Thrown", value: "-date_thrown" },
+  { label: "Thrown (earliest)", value: "date_thrown" },
+  { label: "Trimmed", value: "-date_trimmed" },
+  { label: "Trimmed (earliest)", value: "date_trimmed" },
+  { label: "To Bisque", value: "-date_to_bisque" },
+  { label: "To Bisque (earliest)", value: "date_to_bisque" },
+  { label: "To Glaze", value: "-date_to_glaze" },
+  { label: "To Glaze (earliest)", value: "date_to_glaze" },
+  { label: "Created", value: "-created_at" },
+  { label: "Created (earliest)", value: "created_at" },
+  { label: "Updated", value: "-updated_at" },
+  { label: "Updated (earliest)", value: "updated_at" },
   { label: "Notes", value: "notes" },
 ];
 
@@ -58,7 +64,7 @@ export default function PieceList({}) {
         setSort("date_to_glaze");
         break;
       default:
-        setSort("updated_at");
+        setSort("-updated_at");
     }
   }
 
