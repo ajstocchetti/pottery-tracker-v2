@@ -1,8 +1,10 @@
 # TODOs
 
 - [ ] refresh data from dbx when page gains focus (from other tab, etc)
+- [x] if savePiece is debounced, call it when page unmounts
+- [ ] make added piece the first (add to front of array)
 - [ ] make piece status an enum (and clay, form?)
-- [ ] get cloudfront non "/" urls to work (or use hash based routing? gross)
+- [x] get cloudfront non "/" urls to work (or use hash based routing? gross)
 - [ ] style nav bar (for full screen)
 - [ ] button styling
 - [ ] image order drag-and-drop

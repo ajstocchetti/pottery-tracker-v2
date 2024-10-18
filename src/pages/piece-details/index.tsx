@@ -90,6 +90,13 @@ export default function PieceDetails() {
   const [showRaw, setShowRaw] = useState<boolean>(false);
 
   useEffect(() => {
+    return () => {
+      // save piece when page is unmounted if changes have been debounced
+      debounceSave.flush();
+    };
+  }, []);
+
+  useEffect(() => {
     loadPieceHandler();
   }, [params?.pieceId]);
 
