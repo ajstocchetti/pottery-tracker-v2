@@ -194,7 +194,7 @@ export default function PieceDetails() {
   function addImage(fileName: string) {
     if (!piece) return;
     return function () {
-      setPieceImages([...piece.images, fileName]);
+      setPieceImages([fileName, ...piece.images]);
     };
   }
 
