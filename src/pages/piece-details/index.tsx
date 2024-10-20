@@ -7,6 +7,7 @@ import {
   Radio,
   Switch,
 } from "antd";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DeleteOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
@@ -151,7 +152,7 @@ export default function PieceDetails() {
   }
 
   function setPieceChecked(key: string) {
-    return function (e: any) {
+    return function (e: CheckboxChangeEvent) {
       setPieceValue(key)(e.target.checked);
     };
   }

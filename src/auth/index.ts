@@ -1,3 +1,4 @@
+import { Dropbox, DropboxResponse, users } from "dropbox";
 import Cookies from "universal-cookie";
 import { initialStore, state } from "src/store/valio";
 import { clearDbxCache } from "src/data";
@@ -19,7 +20,10 @@ export function clearLoginCookie() {
   return cookies.remove(tokenCookieName);
 }
 
-export function dbxLogin(dbxInstance: any, account: any) {
+export function dbxLogin(
+  dbxInstance: Dropbox,
+  account: DropboxResponse<users.FullAccount>
+) {
   state.isLoggedIn = true;
   state.dbxInstance = dbxInstance;
   state.user = { email: account?.result?.email };

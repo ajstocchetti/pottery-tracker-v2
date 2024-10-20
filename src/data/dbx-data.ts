@@ -1,3 +1,4 @@
+import { Dropbox, DropboxResponse, files } from "dropbox";
 import _ from "lodash";
 import { v4 as uuid } from "uuid";
 import { snapshot } from "valtio";
@@ -35,7 +36,7 @@ function getDbx() {
   return dbxInstance;
 }
 
-function blobToText(blob: any): Promise<string> {
+function blobToText(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     // @ts-expect-error
@@ -177,10 +178,6 @@ export async function deletePiece(pieceId: string) {
 }
 
 /* IMAGES */
-interface FilesListFolderResultEntry {
-  // TODO: load FilesListFolderResultEntry from Dropbox
-  name: string;
-}
 let imageSrcTimeoutCount = 0;
 
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
@@ -298,7 +295,10 @@ export async function updateImagePieceCount() {
   });
 }
 
-export async function checkImageDirectory(cursor = null, dbx = getDbx()) {
+export async function checkImageDirectory(
+  cursor: files.ListFolderResult["cursor"] | null = null,
+  dbx: Dropbox = getDbx()
+) {
   let func;
   if (cursor) {
     func = dbx.filesListFolderContinue({ cursor });
@@ -310,8 +310,8 @@ export async function checkImageDirectory(cursor = null, dbx = getDbx()) {
     });
   }
 
-  const resp = await func;
-  resp.result.entries.forEach((img: FilesListFolderResultEntry) => {
+  const resp: DropboxResponse<files.ListFolderResult> = await func;
+  resp.result.entries.forEach((img) => {
     if (_.findIndex(IMAGES, { fileName: img.name }) === -1) {
       // image not in store, add image
       const fileName = img.name;

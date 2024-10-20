@@ -4,7 +4,7 @@ import style from "./image.module.css";
 
 interface Props {
   fileName: string;
-  customStyle?: { [css: string]: any };
+  customStyle?: { [css: string]: string };
   onClick?: () => void;
 }
 
