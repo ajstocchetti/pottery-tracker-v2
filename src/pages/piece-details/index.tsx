@@ -3,6 +3,7 @@ import {
   Checkbox,
   DatePicker,
   Input,
+  InputRef,
   Popconfirm,
   Radio,
   Switch,
@@ -11,7 +12,7 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DeleteOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import _ from "lodash";
 
 import AddImageButton from "src/components/image-add-button";
@@ -89,6 +90,8 @@ export default function PieceDetails() {
   const [availableImages, setAvailableImages] = useState<ImageInterface[]>([]);
   const [editingImages, setEditingImages] = useState<boolean>(false);
   const [showRaw, setShowRaw] = useState<boolean>(false);
+
+  const glazeTextRef = useRef<InputRef>(null);
 
   useEffect(() => {
     return () => {
@@ -174,11 +177,17 @@ export default function PieceDetails() {
   function glazeBtnClick(glaze: GlazeDetails) {
     return function () {
       let description = piece?.glaze;
-      if (description && description[description.length - 1] !== " ") {
+      if (
+        description &&
+        ![" ", "\n", "\t", "\r"].includes(description[description.length - 1])
+      ) {
         description += " ";
       }
       description += `${glaze.name} (#${glaze.number})`;
       setPieceValue("glaze")(description);
+      glazeTextRef.current!.focus({
+        cursor: "end",
+      });
     };
   }
 
@@ -307,6 +316,7 @@ export default function PieceDetails() {
       <div className={style.formItem}>
         <label>Glaze:</label>
         <Input.TextArea
+          ref={glazeTextRef}
           rows={3}
           value={piece.glaze}
           onChange={setPieceEvtTarget("glaze")}
