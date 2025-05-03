@@ -1,6 +1,7 @@
+import _ from "lodash";
 import { Button, Input, Select } from "antd";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { loadPieces } from "src/data";
 import { Piece, SelectOptions } from "src/interfaces";
@@ -39,8 +40,33 @@ export default function PieceList({}) {
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [textFilter, setTextFilter] = useState<string>("");
   const { pieceListSort, pieceListStatus } = useSnapshot(state);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    const sortValue = searchParams.get("pieceListStatus");
+    if (sortValue) {
+      if (!_.find(sortOptions, { value: sortValue })) {
+        console.log(`Invalid sort query parameter: ${sortValue}`);
+      } else {
+        setStatus(sortValue);
+      }
+    }
+
+    const statusValue = searchParams.get("pieceListStatus");
+    if (statusValue) {
+      if (!_.find(statusTypes, { value: statusValue })) {
+        console.log(`Invalid status query parameter: ${statusValue}`);
+      } else {
+        setStatus(statusValue);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    setSearchParams({
+      pieceListStatus,
+      pieceListSort,
+    });
     loadPiecesHandler();
   }, [pieceListStatus, pieceListSort, textFilter]);
 
