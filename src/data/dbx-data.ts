@@ -120,12 +120,12 @@ export async function loadPieces(
       (p) => regx.test(p.notes) || regx.test(p.glaze) || regx.test(p.fate)
     );
   }
-  let sortOrder = "asc";
+  let sortOrder: "asc" | "desc" = "asc";
   if (ordering[0] === "-") {
     ordering = ordering.substring(1);
     sortOrder = "desc";
   }
-  return _.sortBy(pieces, ordering, sortOrder);
+  return _.orderBy(pieces, ordering, sortOrder);
 }
 
 export async function loadPiece(pieceId: string) {
