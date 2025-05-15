@@ -15,9 +15,10 @@ const statusTypes: SelectOptions = [
   { label: "At Bisque", value: "AT_BISQUE" },
   { label: "Needs Glaze", value: "NEEDS_GLAZE" },
   { label: "At Glaze", value: "AT_GLAZE" },
+  { label: "In Progress", value: "_IN_PROGRESS" },
   { label: "Complete", value: "COMPLETE" },
   { label: "Abandoned", value: "ABANDONED" },
-  { label: "All Pieces", value: "ALL" },
+  { label: "All Pieces", value: "_ALL" },
 ];
 
 const sortOptions: SelectOptions = [

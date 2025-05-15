@@ -111,7 +111,12 @@ export async function loadPieces(
 ): Promise<Piece[] | undefined> {
   const resp = await loadAllData();
   let pieces = resp?.pieces || [];
-  if (status !== "ALL") pieces = pieces.filter((p) => p.status === status);
+  if (!status.startsWith("_")) {
+    pieces = pieces.filter((p) => p.status === status);
+  } else if (status === "_IN_PROGRESS") {
+    const skipStatuses: Array<string> = ["COMPLETE", "ABANDONED"];
+    pieces = pieces.filter((p) => !skipStatuses.includes(p.status));
+  }
   // if (form) pieces = pieces.filter((p) => p.form_type === form);
   // if (clay) pieces = pieces.filter((p) => p.clay_type === clay);
   if (textFilter) {
