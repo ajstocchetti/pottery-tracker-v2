@@ -44,7 +44,7 @@ export default function PieceList({}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const sortValue = searchParams.get("pieceListStatus");
+    const sortValue = searchParams.get("pieceListSort");
     if (sortValue) {
       if (!_.find(sortOptions, { value: sortValue })) {
         console.log(`Invalid sort query parameter: ${sortValue}`);
