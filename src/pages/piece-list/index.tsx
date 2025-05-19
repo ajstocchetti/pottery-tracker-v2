@@ -137,7 +137,7 @@ export default function PieceList({}) {
         <PieceCard
           piece={piece}
           key={piece.id}
-          showStatus={pieceListStatus === "ALL"}
+          showStatus={pieceListStatus.startsWith("_")}
           onUpdate={loadPiecesHandler}
         />
       ))}
