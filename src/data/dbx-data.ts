@@ -29,6 +29,11 @@ export function logData() {
   });
 }
 
+export async function onLogin() {
+  await loadAllData();
+  await calculateImagePieces();
+}
+
 /* DROPBOX */
 
 function getDbx() {
@@ -133,7 +138,7 @@ export async function loadPieces(
   return _.orderBy(pieces, ordering, sortOrder);
 }
 
-export async function loadPiece(pieceId: string) {
+export async function loadPiece(pieceId: string): Promise<Piece | undefined> {
   const data = await loadAllData();
   const pieces = data?.pieces || [];
   return _.find(pieces, { id: pieceId });
@@ -279,10 +284,11 @@ export async function deleteImage(fileName: string) {
 }
 
 export function getPiecesForImage(fileName: string): string[] {
+  if (!IMAGE_PIECES[fileName]) calculateImagePieces();
   return IMAGE_PIECES[fileName] || [];
 }
 
-export async function updateImagePieceCount() {
+function calculateImagePieces() {
   IMAGE_PIECES = {};
   PIECES.forEach((piece) => {
     piece.images.forEach((fileName) => {
@@ -290,6 +296,10 @@ export async function updateImagePieceCount() {
       IMAGE_PIECES[fileName].push(piece.id);
     });
   });
+}
+
+export async function updateImagePieceCount() {
+  calculateImagePieces();
   IMAGES = IMAGES.map((image) => {
     const numPieces = (IMAGE_PIECES[image.fileName] || []).length;
     const full = numPieces >= image.number_pieces;

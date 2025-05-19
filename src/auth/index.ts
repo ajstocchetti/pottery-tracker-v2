@@ -1,7 +1,7 @@
 import { Dropbox, DropboxResponse, users } from "dropbox";
 import Cookies from "universal-cookie";
 import { initialStore, state } from "src/store/valio";
-import { clearDbxCache } from "src/data";
+import { clearDbxCache, onLogin } from "src/data";
 
 const cookies = new Cookies();
 const tokenCookieName = "DBXACCSTOKEN";
@@ -27,6 +27,7 @@ export function dbxLogin(
   state.isLoggedIn = true;
   state.dbxInstance = dbxInstance;
   state.user = { email: account?.result?.email };
+  onLogin();
 }
 
 export function logout() {

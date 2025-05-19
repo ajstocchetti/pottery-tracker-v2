@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getImageSrc } from "src/data";
 import style from "./image.module.css";
 
-interface Props {
+export interface Props {
   fileName: string;
   customStyle?: { [css: string]: string };
   onClick?: () => void;
