@@ -55,7 +55,7 @@ export function PieceCard(props: Props) {
   return (
     <div className={styles.pieceCard}>
       {showStatus ? <div>{piece.status}</div> : null}
-      <div style={{ width: "fit-content" }}>
+      <div>
         <Link to={`/pieces/${piece.id}`}>
           <Thumbnail fileName={piece.images[0]} />
         </Link>

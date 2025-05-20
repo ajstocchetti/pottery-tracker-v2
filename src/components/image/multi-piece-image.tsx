@@ -25,6 +25,7 @@ export default function MultiPieceImage(props: Props) {
   return (
     <Popover
       mouseEnterDelay={1.4}
+      placement="left"
       content={<OtherPiecesInfo pieceIds={pieceIds} />}
     >
       {/* need to wrap image in div for popover to work */}
