@@ -1,6 +1,7 @@
 import { Collapse } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import OtherPieces from "src/components/image-other-pieces";
 import { Piece } from "src/interfaces";
 import { savePiece } from "src/data";
 import AdvanceStatus from "./advanceStatus";
@@ -61,6 +62,10 @@ export function PieceCard(props: Props) {
         </Link>
       </div>
       <AdvanceStatus status={piece.status} update={statusUpdateHandler} />
+      <span style={{ marginLeft: "0.5rem" }}>
+        {/* hacky way to add padding, fix this someday */}
+        <OtherPieces fileName={piece.images[0]} excludePiece={piece.id} />
+      </span>
       <StdLabeledData label="Form" value={piece.form_type} />
       <StdLabeledData label="Clay" value={piece.clay_type} />
       <StdLabeledData label="Notes" value={piece.notes} />

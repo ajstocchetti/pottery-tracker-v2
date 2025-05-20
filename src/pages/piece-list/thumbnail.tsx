@@ -1,4 +1,4 @@
-import MultiPieceImage from "src/components/image/multi-piece-image";
+import Image from "src/components/image";
 
 interface Props {
   fileName: string;
@@ -7,5 +7,5 @@ interface Props {
 export default function Thumbnail(props: Props) {
   const { fileName } = props;
   if (!fileName) return <p>No image(s) set</p>;
-  return <MultiPieceImage imageProps={{ fileName: fileName }} />;
+  return <Image fileName={fileName} />;
 }
