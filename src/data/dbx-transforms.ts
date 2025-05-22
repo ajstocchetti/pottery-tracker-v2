@@ -16,7 +16,21 @@ export function transform(data: DbxData) {
   if (data.version < 2) data = toTwo(data);
   if (data.version < 3) data = toThree(data);
   if (data.version < 4) data = toFour(data);
+  if (data.version < 4.1) data = porcelainTypos(data);
   return data;
+}
+
+function porcelainTypos(data: DbxData): DbxData {
+  const pieces: Piece[] = data.pieces.map((piece) => {
+    const p = { ...piece };
+    if (p.clay_type === "PORCELIN") p.clay_type = "PORCELAIN";
+    return p;
+  });
+  return {
+    pieces: pieces,
+    images: data.images,
+    version: 4.1,
+  };
 }
 
 function toFour(data: DbxData): DbxData {

@@ -36,7 +36,7 @@ const FORM_OPTIONS: { label: string; value: string }[] = [
   { label: "Other", value: "OTHER" },
 ];
 const CLAY_OPTIONS: { label: string; value: string }[] = [
-  { label: "Porcelin", value: "PORCELIN" },
+  { label: "Porcelain", value: "PORCELAIN" },
   { label: "B-Clay", value: "B_CLAY" },
   { label: "306 Brown Stoneware", value: "306" },
   { label: "White Stoneware", value: "WHITE_STONEWARE" },
