@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Button, Input, Select } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { loadPieces } from "src/data";
@@ -38,10 +38,12 @@ const sortOptions: SelectOptions = [
 ];
 
 export default function PieceList({}) {
-  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [allPieces, setAllPieces] = useState<Piece[]>([]);
+  const [numPiecesToShow, setNumPiecesToShow] = useState<number>(10);
   const [textFilter, setTextFilter] = useState<string>("");
   const { pieceListSort, pieceListStatus } = useSnapshot(state);
   const [searchParams, setSearchParams] = useSearchParams();
+  const listEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sortValue = searchParams.get("pieceListSort");
@@ -71,6 +73,23 @@ export default function PieceList({}) {
     loadPiecesHandler();
   }, [pieceListStatus, pieceListSort, textFilter]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && numPiecesToShow < allPieces.length) {
+          setNumPiecesToShow((prev) => prev + 5);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (listEndRef.current) {
+      observer.observe(listEndRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [numPiecesToShow, allPieces.length]);
+
   function setSort(sortValue: string) {
     state.pieceListSort = sortValue;
   }
@@ -96,8 +115,12 @@ export default function PieceList({}) {
   }
 
   async function loadPiecesHandler() {
-    const pieces = await loadPieces(pieceListSort, pieceListStatus, textFilter);
-    if (pieces) setPieces(pieces);
+    const loadedPieces = await loadPieces(
+      pieceListSort,
+      pieceListStatus,
+      textFilter
+    );
+    if (loadedPieces) setAllPieces(loadedPieces);
   }
 
   function textFilterHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -131,9 +154,9 @@ export default function PieceList({}) {
           allowClear
           onChange={textFilterHandler}
         />
-        <span>{pieces.length} pieces</span>
+        <span>{allPieces.length} pieces</span>
       </div>
-      {pieces.map((piece) => (
+      {allPieces.slice(0, numPiecesToShow).map((piece) => (
         <PieceCard
           piece={piece}
           key={piece.id}
@@ -141,7 +164,8 @@ export default function PieceList({}) {
           onUpdate={loadPiecesHandler}
         />
       ))}
-      {!pieces.length && <div>No pieces</div>}
+      {!allPieces.length && <div>No pieces</div>}
+      <div ref={listEndRef} style={{ height: "1px" }} />
     </>
   );
 }
