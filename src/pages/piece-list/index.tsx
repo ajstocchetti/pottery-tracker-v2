@@ -39,7 +39,7 @@ const sortOptions: SelectOptions = [
 
 export default function PieceList({}) {
   const [allPieces, setAllPieces] = useState<Piece[]>([]);
-  const [numPiecesToShow, setNumPiecesToShow] = useState<number>(10);
+  const [numPiecesToShow, setNumPiecesToShow] = useState<number>(8);
   const [textFilter, setTextFilter] = useState<string>("");
   const { pieceListSort, pieceListStatus } = useSnapshot(state);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -77,7 +77,7 @@ export default function PieceList({}) {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && numPiecesToShow < allPieces.length) {
-          setNumPiecesToShow((prev) => prev + 5);
+          setNumPiecesToShow((prev) => prev + 3);
         }
       },
       { threshold: 0.1 }
@@ -120,7 +120,10 @@ export default function PieceList({}) {
       pieceListStatus,
       textFilter
     );
-    if (loadedPieces) setAllPieces(loadedPieces);
+    if (loadedPieces) {
+      setNumPiecesToShow(8);
+      setAllPieces(loadedPieces);
+    }
   }
 
   function textFilterHandler(e: React.ChangeEvent<HTMLInputElement>) {
