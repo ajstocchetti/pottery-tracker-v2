@@ -1,5 +1,5 @@
 import { Select } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import { loadImages, saveImage } from "src/data";
 import { Image, SelectOptions } from "src/interfaces";
@@ -16,6 +16,8 @@ const filterOptions: SelectOptions = [
 export default function Images() {
   const { imageListFilter } = useSnapshot(state);
   const [images, setImages] = useState<Image[]>([]);
+  const [numImagesToShow, setNumImagesToShow] = useState<number>(5);
+  const listEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadImageAsyncHandler();
@@ -24,6 +26,7 @@ export default function Images() {
   async function loadImageAsyncHandler() {
     const images = await loadImages(imageListFilter);
     setImages(images);
+    setNumImagesToShow(5);
   }
 
   function onUpdate(imageIndex: number) {
@@ -39,6 +42,23 @@ export default function Images() {
     state.imageListFilter = filterVal;
   }
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && numImagesToShow < images.length) {
+          setNumImagesToShow((prev) => prev + 3);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (listEndRef.current) {
+      observer.observe(listEndRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [numImagesToShow, images.length]);
+
   return (
     <div>
       <Select
@@ -47,7 +67,7 @@ export default function Images() {
         options={filterOptions}
         style={{ minWidth: 300, marginBottom: "1rem" }}
       />
-      {images.map((image, index) => (
+      {images.slice(0, numImagesToShow).map((image, index) => (
         <ImageCard
           key={image.fileName}
           image={image}
@@ -55,6 +75,7 @@ export default function Images() {
           onDelete={loadImageAsyncHandler}
         />
       ))}
+      <div ref={listEndRef} style={{ height: "1px" }} />
     </div>
   );
 }
