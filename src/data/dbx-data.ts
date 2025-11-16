@@ -3,13 +3,19 @@ import _ from "lodash";
 import { v4 as uuid } from "uuid";
 import { snapshot } from "valtio";
 import { dataFilePath, imagesDir } from "src/config";
+import { AppConfig, Image, Piece } from "src/interfaces";
 import { state } from "src/store/valio";
-import { Image, Piece } from "src/interfaces";
 import { transform } from "./dbx-transforms";
 
 const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
 let PIECES: Piece[] = [];
 let IMAGES: Image[] = [];
+let APPCONFIG: AppConfig = {
+  claybody: [],
+  form: [],
+  glazes: [],
+  studio: [],
+};
 let VERSION: number = 4;
 let DATA_LAST_LOADED: number = 0;
 const IMAGE_SRC: { [fileName: string]: unknown } = {};
@@ -18,6 +24,7 @@ let IMAGE_PIECES: { [imgId: string]: string[] } = {};
 interface DbxData {
   pieces: Piece[];
   images: Image[];
+  appConfig: AppConfig;
   version: number;
 }
 
@@ -25,6 +32,7 @@ export function logData() {
   console.log({
     pieces: PIECES,
     images: IMAGES,
+    appConfig: APPCONFIG,
     version: VERSION,
   });
 }
@@ -56,7 +64,12 @@ export async function loadAllData(): Promise<DbxData> {
   if (now - DATA_LAST_LOADED < JSON_CACHE_TIMEOUT_MS) {
     console.debug("using cached json file");
     // data was loaded within the last 5 minutes, return cached data
-    return { pieces: PIECES, images: IMAGES, version: VERSION };
+    return {
+      pieces: PIECES,
+      images: IMAGES,
+      appConfig: APPCONFIG,
+      version: VERSION,
+    };
   } else {
     console.debug("loading json file from dropbox");
     const fileResponse = await getDbx().filesDownload({
@@ -64,13 +77,19 @@ export async function loadAllData(): Promise<DbxData> {
     });
     const fileContent = await blobToText(fileResponse.result.fileBlob);
     const data = JSON.parse(fileContent);
-    const { pieces = [], images = [], version = 1 } = data;
-    const transformed = transform({ pieces, images, version });
+    const { pieces = [], images = [], appConfig = {}, version = 1 } = data;
+    const transformed = transform({ pieces, images, version, appConfig });
     PIECES = transformed.pieces;
     IMAGES = transformed.images;
     VERSION = transformed.version;
+    APPCONFIG = transformed.appConfig || defaultAppConfig();
     DATA_LAST_LOADED = now;
-    return transformed;
+    return {
+      pieces: PIECES,
+      images: IMAGES,
+      appConfig: APPCONFIG,
+      version: VERSION,
+    };
   }
 }
 
@@ -93,6 +112,7 @@ export function saveData() {
   return saveDataFile({
     pieces: PIECES,
     images: IMAGES,
+    appConfig: APPCONFIG,
     version: VERSION,
   });
 }
@@ -373,4 +393,14 @@ export async function getImageSrc(fileName: string, retryCount = 0) {
       }, 300 * ++imageSrcTimeoutCount);
     }
   }
+}
+
+/* App Config */
+export function defaultAppConfig(): AppConfig {
+  return {
+    claybody: [],
+    form: [],
+    glazes: [],
+    studio: [],
+  };
 }

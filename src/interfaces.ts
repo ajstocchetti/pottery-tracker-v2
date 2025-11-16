@@ -34,3 +34,12 @@ interface SelectOption {
   value: string;
 }
 export type SelectOptions = SelectOption[];
+
+export type LazyOption = SelectOption | string;
+
+export interface AppConfig {
+  claybody: LazyOption[];
+  form: LazyOption[];
+  glazes: LazyOption[];
+  studio: LazyOption[];
+}

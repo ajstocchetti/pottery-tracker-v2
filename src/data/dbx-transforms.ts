@@ -1,14 +1,16 @@
-import { Image, Piece } from "src/interfaces";
+import { AppConfig, Image, Piece } from "src/interfaces";
 
 interface DbxDataIn {
   pieces: any[];
   images: any[];
   version: number;
+  appConfig?: AppConfig;
 }
 
 interface DbxData {
   pieces: Piece[];
   images: Image[];
+  appConfig?: AppConfig;
   version: number;
 }
 
@@ -17,7 +19,23 @@ export function transform(data: DbxData) {
   if (data.version < 3) data = toThree(data);
   if (data.version < 4) data = toFour(data);
   if (data.version < 4.1) data = porcelainTypos(data);
+  if (data.version < 5) data = emptyConfig(data);
   return data;
+}
+
+function emptyConfig(data: DbxData): DbxData {
+  const initialConfig = {
+    claybody: ["Stoneware", "Porcelain"],
+    form: ["Mug", "Bowl", "Vase", "Other"],
+    glazes: [],
+    studio: [],
+  };
+  return {
+    appConfig: data.appConfig || initialConfig,
+    pieces: data.pieces,
+    images: data.images,
+    version: 5,
+  };
 }
 
 function porcelainTypos(data: DbxData): DbxData {
