@@ -190,6 +190,24 @@ export default function PieceDetails() {
       </div>
 
       <div className={style.formItem}>
+        <label>Studio</label>
+        <Input
+          value={piece.studio}
+          onChange={setPieceEvtTarget("studio")}
+          className={style.withBtns}
+        />
+        {appConfig.studio.length && (
+          <Radio.Group
+            value={piece.studio}
+            onChange={setPieceEvtTarget("studio")}
+            options={[...appConfig.studio]}
+            optionType="button"
+            buttonStyle="solid"
+          />
+        )}
+      </div>
+
+      <div className={style.formItem}>
         <label>Date Thrown:</label>
         <DatePicker
           defaultValue={getFormatDate(piece.date_thrown)}
@@ -207,6 +225,11 @@ export default function PieceDetails() {
 
       <div className={style.formItem}>
         <label>Form:</label>
+        <Input
+          value={piece.form_type}
+          onChange={setPieceEvtTarget("form_type")}
+          className={style.withBtns}
+        />
         <Radio.Group
           value={piece.form_type}
           onChange={setPieceEvtTarget("form_type")}
@@ -218,6 +241,11 @@ export default function PieceDetails() {
 
       <div className={style.formItem}>
         <label>Clay:</label>
+        <Input
+          value={piece.clay_type}
+          onChange={setPieceEvtTarget("clay_type")}
+          className={style.withBtns}
+        />
         <Radio.Group
           value={piece.clay_type}
           onChange={setPieceEvtTarget("clay_type")}
