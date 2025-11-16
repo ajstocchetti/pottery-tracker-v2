@@ -11,3 +11,8 @@ div.formItem > label {
   display: inline-block;
   max-width: 100%;
 }
+
+input.withBtns {
+  width: auto;
+  margin-right: 5px;
+}

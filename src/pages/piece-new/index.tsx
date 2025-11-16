@@ -33,6 +33,7 @@ export default function NewPiece() {
         status: "NEEDS_TRIMMING",
         weight: "",
         images: [],
+        studio: "",
       },
       true
     );

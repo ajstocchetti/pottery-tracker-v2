@@ -1,3 +1,4 @@
+import { AppConfig } from "src/interfaces";
 import { proxy } from "valtio";
 import { devtools } from "valtio/utils";
 
@@ -8,6 +9,7 @@ interface store {
   pieceListSort: string;
   pieceListStatus: string;
   imageListFilter: string;
+  appConfig: AppConfig;
 }
 
 export const initialStore: store = {
@@ -17,6 +19,12 @@ export const initialStore: store = {
   pieceListSort: "updated_at",
   pieceListStatus: "NEEDS_TRIMMING",
   imageListFilter: "NEED_PIECES",
+  appConfig: {
+    claybody: [],
+    form: [],
+    glazes: [],
+    studio: [],
+  },
 };
 
 export const state = proxy(initialStore);

@@ -66,6 +66,7 @@ export function PieceCard(props: Props) {
         {/* hacky way to add padding, fix this someday */}
         <OtherPieces fileName={piece.images[0]} excludePiece={piece.id} />
       </span>
+      {piece.studio && <StdLabeledData label="Studio" value={piece.studio} />}
       <StdLabeledData label="Form" value={piece.form_type} />
       <StdLabeledData label="Clay" value={piece.clay_type} />
       <StdLabeledData label="Notes" value={piece.notes} />

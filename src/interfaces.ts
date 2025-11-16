@@ -28,9 +28,19 @@ export interface Piece {
   status: string;
   weight: string;
   images: string[];
+  studio: string;
 }
 interface SelectOption {
   label: string;
   value: string;
 }
 export type SelectOptions = SelectOption[];
+
+export type LazyOption = SelectOption | string;
+
+export interface AppConfig {
+  claybody: LazyOption[];
+  form: LazyOption[];
+  glazes: string[];
+  studio: LazyOption[];
+}
