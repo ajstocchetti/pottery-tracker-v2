@@ -28,7 +28,7 @@ export interface Piece {
   status: string;
   weight: string;
   images: string[];
-  studio: string | undefined;
+  studio: string;
 }
 interface SelectOption {
   label: string;

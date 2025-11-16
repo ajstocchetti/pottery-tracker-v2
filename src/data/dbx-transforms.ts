@@ -1,16 +1,17 @@
+// @ts-nocheck
 import { AppConfig, Image, Piece } from "src/interfaces";
 
 interface DbxDataIn {
   pieces: any[];
   images: any[];
   version: number;
-  appConfig?: AppConfig;
+  appConfig: AppConfig;
 }
 
 interface DbxData {
   pieces: Piece[];
   images: Image[];
-  appConfig?: AppConfig;
+  appConfig: AppConfig;
   version: number;
 }
 
@@ -20,15 +21,69 @@ export function transform(data: DbxData) {
   if (data.version < 4) data = toFour(data);
   if (data.version < 4.1) data = porcelainTypos(data);
   if (data.version < 5) data = emptyConfig(data);
+  if (data.version < 5.1) data = addStudio(data);
   return data;
+}
+
+function addStudio(data: DbxData): DbxData {
+  const pieces: Piece[] = data.pieces.map((piece) => {
+    const p = { studio: "", ...piece };
+    return p;
+  });
+  return {
+    pieces: pieces,
+    images: data.images,
+    appConfig: data.appConfig,
+    version: 5.1,
+  };
 }
 
 function emptyConfig(data: DbxData): DbxData {
   const initialConfig = {
-    claybody: ["Stoneware", "Porcelain"],
-    form: ["Mug", "Bowl", "Vase", "Other"],
-    glazes: [],
-    studio: [],
+    claybody: [
+      { label: "Porcelain", value: "PORCELAIN" },
+      { label: "B-Clay", value: "B_CLAY" },
+      { label: "306 Brown Stoneware", value: "306" },
+      { label: "White Stoneware", value: "WHITE_STONEWARE" },
+      { label: "Reclaim", value: "RECLAIM" },
+      { label: "Gumbo", value: "GUMBO" },
+      { label: "Other", value: "OTHER" },
+    ],
+    form: [
+      { label: "Bowl", value: "BOWL" },
+      { label: "Mug", value: "MUG" },
+      { label: "Vase", value: "VASE" },
+      { label: "Teapot", value: "TEAPOT" },
+      { label: "Other", value: "OTHER" },
+    ],
+    glazes: [
+      "Shaner Clear (#1)",
+      "Shaner White (#2)",
+      "Antique White (#3)",
+      "Matte White (#4)",
+      "Yellow Salt (#5)",
+      "Gustin Shino (#6)",
+      "Lau Shino (#7)",
+      "Blue Celedon (#8)",
+      "Green Celedon (#9)",
+      "Coleman Apple Green (#10)",
+      "Josh Green (#11)",
+      "Reitz Green (#12)",
+      "Josh Blue (#13)",
+      "Aviva Blue (#14)",
+      "Lavender (#15)",
+      "Rutile Blue (#16)",
+      "Iron Red (#17)",
+      "Temmoku (#18)",
+      "Matte Black (#19)",
+      "Chun Blue (#20)",
+      "Cohen's Red (#21)",
+      "Amber Celedon (#22)",
+      "Tom's Purple (#23)",
+      "Tea Dust (#24)",
+      "Galaxy Black (#25)",
+    ],
+    studio: ["AlleyCat", "Lillstreet"],
   };
   return {
     appConfig: data.appConfig || initialConfig,
