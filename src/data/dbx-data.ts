@@ -40,6 +40,7 @@ export function logData() {
 export async function onLogin() {
   await loadAllData();
   await calculateImagePieces();
+  await loadAppConfig();
 }
 
 /* DROPBOX */
@@ -104,6 +105,7 @@ async function saveDataFile(data: DbxData) {
   });
   PIECES = data.pieces;
   IMAGES = data.images;
+  APPCONFIG = data.appConfig;
   VERSION = data.version;
   DATA_LAST_LOADED = now;
 }
@@ -396,11 +398,18 @@ export async function getImageSrc(fileName: string, retryCount = 0) {
 }
 
 /* App Config */
-export function defaultAppConfig(): AppConfig {
+function defaultAppConfig(): AppConfig {
   return {
     claybody: [],
     form: [],
     glazes: [],
     studio: [],
   };
+}
+
+export async function loadAppConfig(): Promise<AppConfig> {
+  const resp = await loadAllData();
+  const config = resp.appConfig;
+  state.appConfig = config;
+  return config;
 }

@@ -14,68 +14,16 @@ import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import _ from "lodash";
+import { useSnapshot } from "valtio";
 
 import AddImageButton from "src/components/image-add-button";
 import Image from "src/components/image";
 import { Image as ImageInterface, Piece } from "src/interfaces";
 import { deletePiece, loadImages, loadPiece, savePiece } from "src/data";
+import { state } from "src/store/valio";
 
 import ImageList from "./image-list";
 import style from "./piecedetail.module.css";
-
-interface GlazeDetails {
-  name: string;
-  number: number;
-}
-
-const FORM_OPTIONS: { label: string; value: string }[] = [
-  { label: "Bowl", value: "BOWL" },
-  { label: "Mug", value: "MUG" },
-  { label: "Vase", value: "VASE" },
-  { label: "Teapot", value: "TEAPOT" },
-  { label: "Other", value: "OTHER" },
-];
-const CLAY_OPTIONS: { label: string; value: string }[] = [
-  { label: "Porcelain", value: "PORCELAIN" },
-  { label: "B-Clay", value: "B_CLAY" },
-  { label: "306 Brown Stoneware", value: "306" },
-  { label: "White Stoneware", value: "WHITE_STONEWARE" },
-  { label: "Reclaim", value: "RECLAIM" },
-  { label: "Gumbo", value: "GUMBO" },
-  { label: "Other", value: "OTHER" },
-];
-
-const GLAZES: GlazeDetails[] = [
-  { number: 1, name: "Shaner Clear" },
-  { number: 2, name: "Shaner White" },
-  { number: 3, name: "Antique White" },
-  { number: 4, name: "Matte White" },
-  { number: 5, name: "Yellow Salt" },
-  { number: 6, name: "Gustin Shino" },
-  { number: 7, name: "Lau Shino" },
-  { number: 8, name: "Blue Celedon" },
-  { number: 9, name: "Green Celedon" },
-  { number: 10, name: "Coleman Apple Green" },
-  { number: 11, name: "Josh Green" },
-  { number: 12, name: "Reitz Green" },
-  { number: 13, name: "Josh Blue" },
-  { number: 14, name: "Aviva Blue" },
-  { number: 15, name: "Lavender" },
-  { number: 16, name: "Rutile Blue" },
-  { number: 17, name: "Iron Red" },
-  { number: 18, name: "Temmoku" },
-  { number: 19, name: "Matte Black" },
-  { number: 20, name: "Chun Blue" },
-  { number: 21, name: "Cohen's Red" },
-  { number: 22, name: "Amber Celedon" },
-  { number: 23, name: "Tom's Purple" },
-  { number: 24, name: "Tea Dust" },
-  { number: 25, name: "Galaxy Black" },
-];
-
-function glazeToString(glaze: GlazeDetails): string {
-  return `${glaze.name} [${glaze.number}]`;
-}
 
 function getFormatDate(dateValue: string | null) {
   const dateFormat = "YYYY-MM-DD";
@@ -90,6 +38,7 @@ export default function PieceDetails() {
   const [availableImages, setAvailableImages] = useState<ImageInterface[]>([]);
   const [editingImages, setEditingImages] = useState<boolean>(false);
   const [showRaw, setShowRaw] = useState<boolean>(false);
+  const { appConfig } = useSnapshot(state);
 
   const glazeTextRef = useRef<InputRef>(null);
 
@@ -174,7 +123,7 @@ export default function PieceDetails() {
     };
   }
 
-  function glazeBtnClick(glaze: GlazeDetails) {
+  function glazeBtnClick(glaze: string) {
     return function () {
       let description = piece?.glaze;
       if (
@@ -183,7 +132,7 @@ export default function PieceDetails() {
       ) {
         description += " ";
       }
-      description += `${glaze.name} (#${glaze.number})`;
+      description += glaze;
       setPieceValue("glaze")(description);
       glazeTextRef.current!.focus({
         cursor: "end",
@@ -261,7 +210,7 @@ export default function PieceDetails() {
         <Radio.Group
           value={piece.form_type}
           onChange={setPieceEvtTarget("form_type")}
-          options={FORM_OPTIONS}
+          options={[...appConfig.form]}
           optionType="button"
           buttonStyle="solid"
         />
@@ -272,7 +221,7 @@ export default function PieceDetails() {
         <Radio.Group
           value={piece.clay_type}
           onChange={setPieceEvtTarget("clay_type")}
-          options={CLAY_OPTIONS}
+          options={[...appConfig.claybody]}
           optionType="button"
           buttonStyle="solid"
         />
@@ -321,13 +270,13 @@ export default function PieceDetails() {
           value={piece.glaze}
           onChange={setPieceEvtTarget("glaze")}
         />
-        {GLAZES.map((glaze: GlazeDetails, i) => (
+        {appConfig.glazes.map((glaze, i) => (
           <Button
             key={i}
             onClick={glazeBtnClick(glaze)}
             style={{ margin: "0.5rem 0.5rem 0 0" }}
           >
-            {glazeToString(glaze)}
+            {glaze}
           </Button>
         ))}
       </div>
