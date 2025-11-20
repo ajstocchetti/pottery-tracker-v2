@@ -4,6 +4,7 @@
 }
 
 .spacedRow {
+  margin-top: 0.2rem;
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;

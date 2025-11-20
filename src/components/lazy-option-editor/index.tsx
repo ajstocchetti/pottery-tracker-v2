@@ -47,19 +47,18 @@ export default function LazyOptionEditor(props: Props) {
 
   return (
     <div className={style.container}>
-      {!disableComplex && (
-        <div>
-          <label>Simple Option</label>
-          <Switch
-            value={typeof option === "string"}
-            onChange={toggleIsString}
-          />
-        </div>
-      )}
-
       <label>
         <strong>{displayValue()}</strong>
       </label>
+      {!disableComplex && (
+        <Switch
+          checkedChildren="Simple"
+          unCheckedChildren="Complex"
+          value={typeof option === "string"}
+          onChange={toggleIsString}
+          style={{ marginLeft: "0.5rem" }}
+        />
+      )}
 
       <div className={style.spacedRow}>
         {typeof option === "string" ? (
