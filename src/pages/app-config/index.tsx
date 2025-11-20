@@ -8,6 +8,12 @@ import {
   addStudioItem,
   editStudioItem,
   deleteStudioItem,
+  editClayBodyItem,
+  deleteClayBodyItem,
+  addClayBodyItem,
+  addFormItem,
+  editFormItem,
+  deleteFormItem,
 } from "src/data";
 import { state } from "src/store/valio";
 
@@ -24,34 +30,63 @@ export default function AppConfig() {
       <Collapse
         items={[
           {
-            key: "1",
-            label: "Studios",
+            key: "claybodies",
+            label: "Clay Bodies",
             children: (
               <>
-                {appConfig.studio.map((studio, idx) => (
+                {appConfig.claybody.map((clayBody, idx) => (
                   <LazyOptionEditor
                     key={idx}
-                    option={studio}
+                    option={clayBody}
                     onSave={(option) => {
-                      editStudioItem(option, idx);
+                      editClayBodyItem(option, idx);
                     }}
-                    onDelete={() => deleteStudioItem(idx)}
-                    disableComplex={true}
-                    optionType="studio"
+                    onDelete={() => deleteClayBodyItem(idx)}
+                    optionType="clay body"
                   />
                 ))}
                 <Button
                   style={newBtnStyle}
                   type="primary"
-                  onClick={() => addStudioItem()}
+                  onClick={() => addClayBodyItem()}
                 >
-                  New Studio
+                  New Clay Body
                 </Button>
               </>
             ),
           },
           {
-            key: "2",
+            key: "forms",
+            label: "Forms",
+            children: (
+              <>
+                {appConfig.form.map((form, idx) => (
+                  <LazyOptionEditor
+                    key={idx}
+                    option={form}
+                    onSave={(option) => {
+                      editFormItem(option, idx);
+                    }}
+                    onDelete={() => {
+                      deleteFormItem(idx);
+                    }}
+                    optionType="form"
+                  />
+                ))}
+                <Button
+                  style={newBtnStyle}
+                  type="primary"
+                  onClick={() => {
+                    addFormItem();
+                  }}
+                >
+                  New Form
+                </Button>
+              </>
+            ),
+          },
+          {
+            key: "glazes",
             label: "Glazes",
             children: (
               <>
@@ -74,6 +109,33 @@ export default function AppConfig() {
                   onClick={() => addGlazeItem()}
                 >
                   New Glaze
+                </Button>
+              </>
+            ),
+          },
+          {
+            key: "studios",
+            label: "Studios",
+            children: (
+              <>
+                {appConfig.studio.map((studio, idx) => (
+                  <LazyOptionEditor
+                    key={idx}
+                    option={studio}
+                    onSave={(option) => {
+                      editStudioItem(option, idx);
+                    }}
+                    onDelete={() => deleteStudioItem(idx)}
+                    disableComplex={true}
+                    optionType="studio"
+                  />
+                ))}
+                <Button
+                  style={newBtnStyle}
+                  type="primary"
+                  onClick={() => addStudioItem()}
+                >
+                  New Studio
                 </Button>
               </>
             ),

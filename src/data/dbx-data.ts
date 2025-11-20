@@ -401,6 +401,44 @@ async function saveAppConfig(config: AppConfig) {
   state.appConfig = config;
 }
 
+/*****  --  Clay Body: App Config  --  *****/
+export async function addClayBodyItem(newValue: string = "New Clay Body") {
+  const config = CACHED_DATA.appConfig;
+  config.claybody.push(newValue);
+  await saveAppConfig(config);
+}
+
+export async function editClayBodyItem(newValue: LazyOption, index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.claybody[index] = newValue;
+  await saveAppConfig(config);
+}
+
+export async function deleteClayBodyItem(index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.claybody.splice(index, 1);
+  await saveAppConfig(config);
+}
+
+/*****  --  Form: App Config  --  *****/
+export async function addFormItem(newValue: string = "New Form") {
+  const config = CACHED_DATA.appConfig;
+  config.form.push(newValue);
+  await saveAppConfig(config);
+}
+
+export async function editFormItem(newValue: LazyOption, index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.form[index] = newValue;
+  await saveAppConfig(config);
+}
+
+export async function deleteFormItem(index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.form.splice(index, 1);
+  await saveAppConfig(config);
+}
+
 /*****  --  Glazes: App Config  --  *****/
 export async function addGlazeItem(newValue: string = "New Glaze") {
   const config = CACHED_DATA.appConfig;
