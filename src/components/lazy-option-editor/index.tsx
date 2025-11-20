@@ -1,5 +1,6 @@
 import { LazyOption, SelectOption } from "src/interfaces";
 import { Button, Popconfirm, Switch } from "antd";
+import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 import SelectOptionEditor from "./select-option-editor";
@@ -11,6 +12,7 @@ interface Props {
   onSave: (opt: LazyOption) => void;
   onDelete?: () => void;
   disableComplex?: boolean;
+  optionType?: string;
 }
 
 export default function LazyOptionEditor(props: Props) {
@@ -19,6 +21,7 @@ export default function LazyOptionEditor(props: Props) {
     onDelete,
     onSave,
     disableComplex = false,
+    optionType = "option",
   } = props;
   const [option, setOption] = useState<LazyOption>("");
 
@@ -38,6 +41,10 @@ export default function LazyOptionEditor(props: Props) {
     }
   }
 
+  function displayValue() {
+    return typeof inputOption === "string" ? inputOption : inputOption.label;
+  }
+
   return (
     <div className={style.container}>
       {!disableComplex && (
@@ -50,29 +57,36 @@ export default function LazyOptionEditor(props: Props) {
         </div>
       )}
 
-      {typeof option === "string" ? (
-        <StringOptionEditor option={option} onChange={setOption} />
-      ) : (
-        <SelectOptionEditor option={option} onChange={setOption} />
-      )}
+      <label>
+        <strong>{displayValue()}</strong>
+      </label>
 
-      <Button type="primary" onClick={() => onSave(option)}>
-        Save
-      </Button>
-      {onDelete && (
-        <Popconfirm
-          title="Confirm Deletion"
-          description="Are you sure to delete this option?"
-          onConfirm={() => onDelete()} // do not await
-          // onCancel={cancel}
-          okText="Delete"
-          cancelText="Cancel"
-        >
-          <Button type="primary" danger>
-            Delete
-          </Button>
-        </Popconfirm>
-      )}
+      <div className={style.spacedRow}>
+        {typeof option === "string" ? (
+          <StringOptionEditor option={option} onChange={setOption} />
+        ) : (
+          <SelectOptionEditor option={option} onChange={setOption} />
+        )}
+
+        <Button type="primary" onClick={() => onSave(option)}>
+          <SaveOutlined />
+        </Button>
+        {onDelete && (
+          <Popconfirm
+            title="Confirm Deletion"
+            description={`Are you sure to delete the ${optionType} ${displayValue()}?`}
+            onConfirm={() => onDelete()} // do not await
+            // onCancel={cancel}
+            okText="DELETE"
+            cancelText="Cancel"
+            icon={<DeleteOutlined />}
+          >
+            <Button type="primary" danger>
+              <DeleteOutlined />
+            </Button>
+          </Popconfirm>
+        )}
+      </div>
     </div>
   );
 }

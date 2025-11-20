@@ -1,12 +1,15 @@
 .container {
   margin-bottom: 0.75rem;
+  width: fit-content;
 }
 
-.container button {
-  margin-left: 0.5rem;
-}
-
-.container .spaced {
+.spacedRow {
   display: flex;
-  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.spacedRow input {
+  min-width: 200px;
 }

@@ -20,14 +20,5 @@ export default function StringOptionEditor(props: Props) {
     onChange(nextValue);
   }
 
-  return (
-    <div>
-      <div>
-        <label>{inputOption}</label>
-      </div>
-      <div>
-        <Input value={option} onChange={handleChange} />
-      </div>
-    </div>
-  );
+  return <Input value={option} onChange={handleChange} />;
 }

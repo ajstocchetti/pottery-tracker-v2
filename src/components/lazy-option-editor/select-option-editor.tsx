@@ -29,11 +29,10 @@ export default function SelectOptionEditor(props: Props) {
 
   return (
     <div>
-      <label>Value</label>
-      <Input value={option.value} onChange={onChangeOptionValue} />
-
       <label>Display Name</label>
       <Input value={option.label} onChange={onChangeOptionLabel} />
+      <label>Value</label>
+      <Input value={option.value} onChange={onChangeOptionValue} />
     </div>
   );
 }
