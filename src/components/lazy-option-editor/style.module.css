@@ -1,0 +1,12 @@
+.container {
+  margin-bottom: 0.75rem;
+}
+
+.container button {
+  margin-left: 0.5rem;
+}
+
+.container .spaced {
+  display: flex;
+  justify-content: space-between;
+}

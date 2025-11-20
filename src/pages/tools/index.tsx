@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   checkImageDirectory,
   loadAllData,
@@ -11,6 +12,7 @@ import {
 import { Image } from "src/interfaces";
 
 export default function Tools() {
+  const navigate = useNavigate();
   const [images, setImages] = useState<Image[]>([]);
 
   async function imgAsyncHandler() {
@@ -32,6 +34,10 @@ export default function Tools() {
     await saveData();
   }
 
+  function goToConfigEditor() {
+    navigate("/app-config");
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Button onClick={loadAllData}>Load from Dropbox</Button>
@@ -39,6 +45,7 @@ export default function Tools() {
       <Button onClick={logData}>Log Data</Button>
       <Button onClick={imagePieceCountHandler}>Set Image Count Full</Button>
       <Button onClick={checkImagesHandler}>Check for images</Button>
+      <Button onClick={goToConfigEditor}>Config Editor</Button>
       <div>
         <label>Number of images: </label>
         <span>{images.length}</span>

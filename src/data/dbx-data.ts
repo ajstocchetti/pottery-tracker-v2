@@ -3,23 +3,9 @@ import _ from "lodash";
 import { v4 as uuid } from "uuid";
 import { snapshot } from "valtio";
 import { dataFilePath, imagesDir } from "src/config";
-import { AppConfig, Image, Piece } from "src/interfaces";
+import { AppConfig, Image, LazyOption, Piece } from "src/interfaces";
 import { state } from "src/store/valio";
 import { transform } from "./dbx-transforms";
-
-const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
-let PIECES: Piece[] = [];
-let IMAGES: Image[] = [];
-let APPCONFIG: AppConfig = {
-  claybody: [],
-  form: [],
-  glazes: [],
-  studio: [],
-};
-let VERSION: number = 4;
-let DATA_LAST_LOADED: number = 0;
-const IMAGE_SRC: { [fileName: string]: unknown } = {};
-let IMAGE_PIECES: { [imgId: string]: string[] } = {};
 
 interface DbxData {
   pieces: Piece[];
@@ -28,13 +14,24 @@ interface DbxData {
   version: number;
 }
 
+const JSON_CACHE_TIMEOUT_MS = 180000; // 3 minutes
+const CACHED_DATA: DbxData = {
+  pieces: [],
+  images: [],
+  appConfig: {
+    claybody: [],
+    form: [],
+    glazes: [],
+    studio: [],
+  },
+  version: 0,
+};
+let DATA_LAST_LOADED: number = 0;
+const IMAGE_SRC: { [fileName: string]: unknown } = {};
+let IMAGE_PIECES: { [imgId: string]: string[] } = {};
+
 export function logData() {
-  console.log({
-    pieces: PIECES,
-    images: IMAGES,
-    appConfig: APPCONFIG,
-    version: VERSION,
-  });
+  console.log(CACHED_DATA);
 }
 
 export async function onLogin() {
@@ -65,12 +62,7 @@ export async function loadAllData(): Promise<DbxData> {
   if (now - DATA_LAST_LOADED < JSON_CACHE_TIMEOUT_MS) {
     console.debug("using cached json file");
     // data was loaded within the last 5 minutes, return cached data
-    return {
-      pieces: PIECES,
-      images: IMAGES,
-      appConfig: APPCONFIG,
-      version: VERSION,
-    };
+    return CACHED_DATA;
   } else {
     console.debug("loading json file from dropbox");
     const fileResponse = await getDbx().filesDownload({
@@ -80,50 +72,38 @@ export async function loadAllData(): Promise<DbxData> {
     const data = JSON.parse(fileContent);
     const { pieces = [], images = [], appConfig = {}, version = 1 } = data;
     const transformed = transform({ pieces, images, version, appConfig });
-    PIECES = transformed.pieces;
-    IMAGES = transformed.images;
-    VERSION = transformed.version;
-    APPCONFIG = transformed.appConfig || defaultAppConfig();
+    CACHED_DATA.pieces = transformed.pieces;
+    CACHED_DATA.images = transformed.images;
+    CACHED_DATA.appConfig = transformed.appConfig || defaultAppConfig();
+    CACHED_DATA.version = transformed.version;
     DATA_LAST_LOADED = now;
-    return {
-      pieces: PIECES,
-      images: IMAGES,
-      appConfig: APPCONFIG,
-      version: VERSION,
-    };
+    return CACHED_DATA;
   }
 }
 
-async function saveDataFile(data: DbxData) {
+export async function saveData() {
   const now = Date.now();
-  const toSync = JSON.stringify(data);
+  const toSync = JSON.stringify(CACHED_DATA);
   await getDbx().filesUpload({
     path: dataFilePath,
     contents: toSync,
     mute: true,
     mode: "overwrite",
   });
-  PIECES = data.pieces;
-  IMAGES = data.images;
-  APPCONFIG = data.appConfig;
-  VERSION = data.version;
   DATA_LAST_LOADED = now;
 }
 
-export function saveData() {
-  return saveDataFile({
-    pieces: PIECES,
-    images: IMAGES,
-    appConfig: APPCONFIG,
-    version: VERSION,
-  });
-}
-
 export function clearDbxCache() {
-  PIECES = [];
-  IMAGES = [];
-  VERSION = 3;
+  CACHED_DATA.pieces = [];
+  CACHED_DATA.images = [];
+  CACHED_DATA.appConfig = {
+    claybody: [],
+    form: [],
+    glazes: [],
+    studio: [],
+  };
   DATA_LAST_LOADED = 0;
+  IMAGE_PIECES = {};
   Object.keys(IMAGE_SRC).forEach((key) => {
     delete IMAGE_SRC[key];
   });
@@ -190,11 +170,11 @@ export async function savePiece(
   }
 
   await loadAllData();
-  if (isNew) PIECES.push(toSave);
+  if (isNew) CACHED_DATA.pieces.push(toSave);
   else {
-    const index = _.findIndex(PIECES, { id: toSave.id });
-    const numImages = PIECES[index].images.length;
-    PIECES[index] = toSave;
+    const index = _.findIndex(CACHED_DATA.pieces, { id: toSave.id });
+    const numImages = CACHED_DATA.pieces[index].images.length;
+    CACHED_DATA.pieces[index] = toSave;
     // if number of images has changed, then update all_pieces_added for all images
     if (numImages !== toSave.images.length) await updateImagePieceCount();
   }
@@ -204,9 +184,9 @@ export async function savePiece(
 
 export async function deletePiece(pieceId: string) {
   await loadAllData();
-  _.remove(PIECES, { id: pieceId });
+  _.remove(CACHED_DATA.pieces, { id: pieceId });
   await updateImagePieceCount();
-  saveData();
+  await saveData();
 }
 
 /* IMAGES */
@@ -254,7 +234,7 @@ export async function uploadImage(fileInfo: File, pieceId: string) {
     });
 
     const fileName = resp.result.name;
-    IMAGES.push({
+    CACHED_DATA.images.push({
       fileName: fileName,
       created_at: new Date().toISOString(),
       is_inspiration: false,
@@ -263,11 +243,11 @@ export async function uploadImage(fileInfo: File, pieceId: string) {
       tags: [],
     });
 
-    const pieceIndex = _.findIndex(PIECES, { id: pieceId });
+    const pieceIndex = _.findIndex(CACHED_DATA.pieces, { id: pieceId });
     if (pieceIndex) {
-      PIECES[pieceIndex].images.push(fileName);
+      CACHED_DATA.pieces[pieceIndex].images.push(fileName);
     }
-    saveData();
+    await saveData();
   } catch (err) {
     console.warn("Error uploading file");
     console.warn(err);
@@ -276,18 +256,18 @@ export async function uploadImage(fileInfo: File, pieceId: string) {
 
 export async function saveImage(image: Image): Promise<Image | undefined> {
   await loadAllData();
-  const index = _.findIndex(IMAGES, { fileName: image.fileName });
+  const index = _.findIndex(CACHED_DATA.images, { fileName: image.fileName });
   if (index < 0) {
     console.warn(`Could not find image to save with name ${image.fileName}`);
     return;
   }
-  const previousPieces = IMAGES[index].number_pieces;
-  IMAGES[index] = image;
+  const previousPieces = CACHED_DATA.images[index].number_pieces;
+  CACHED_DATA.images[index] = image;
   if (previousPieces !== image.number_pieces) {
     await updateImagePieceCount();
   }
   saveData(); // do not await, need to return image right away
-  return IMAGES[index]; // return the image from IMAGES, in case updateImagePieceCount was called and updated the object
+  return CACHED_DATA.images[index]; // return the image from IMAGES, in case updateImagePieceCount was called and updated the object
 }
 
 export async function deleteImage(fileName: string) {
@@ -295,11 +275,11 @@ export async function deleteImage(fileName: string) {
     const fullName = fullPath(fileName);
     await getDbx().filesDeleteV2({ path: fullName });
     await loadAllData();
-    _.remove(IMAGES, { fileName });
-    PIECES.forEach((piece) => {
+    _.remove(CACHED_DATA.images, { fileName });
+    CACHED_DATA.pieces.forEach((piece) => {
       piece.images = piece.images.filter((fn) => fn !== fileName);
     });
-    saveData();
+    await saveData();
   } catch (err) {
     console.warn("Error deleting image:", err);
   }
@@ -312,7 +292,7 @@ export function getPiecesForImage(fileName: string): string[] {
 
 function calculateImagePieces() {
   IMAGE_PIECES = {};
-  PIECES.forEach((piece) => {
+  CACHED_DATA.pieces.forEach((piece) => {
     piece.images.forEach((fileName) => {
       if (!IMAGE_PIECES[fileName]) IMAGE_PIECES[fileName] = [];
       IMAGE_PIECES[fileName].push(piece.id);
@@ -322,7 +302,7 @@ function calculateImagePieces() {
 
 export async function updateImagePieceCount() {
   calculateImagePieces();
-  IMAGES = IMAGES.map((image) => {
+  CACHED_DATA.images = CACHED_DATA.images.map((image) => {
     const numPieces = (IMAGE_PIECES[image.fileName] || []).length;
     const full = numPieces >= image.number_pieces;
     return {
@@ -349,10 +329,10 @@ export async function checkImageDirectory(
 
   const resp: DropboxResponse<files.ListFolderResult> = await func;
   resp.result.entries.forEach((img) => {
-    if (_.findIndex(IMAGES, { fileName: img.name }) === -1) {
+    if (_.findIndex(CACHED_DATA.images, { fileName: img.name }) === -1) {
       // image not in store, add image
       const fileName = img.name;
-      IMAGES.push({
+      CACHED_DATA.images.push({
         fileName,
         created_at: new Date().toISOString(),
         is_inspiration: false,
@@ -366,7 +346,7 @@ export async function checkImageDirectory(
   if (resp.result.has_more) {
     return checkImageDirectory(resp.result.cursor, dbx);
   } else {
-    saveData();
+    await saveData();
   }
 }
 
@@ -397,7 +377,7 @@ export async function getImageSrc(fileName: string, retryCount = 0) {
   }
 }
 
-/* App Config */
+/**********  --  App Config  --  **********/
 function defaultAppConfig(): AppConfig {
   return {
     claybody: [],
@@ -412,4 +392,49 @@ export async function loadAppConfig(): Promise<AppConfig> {
   const config = resp.appConfig;
   state.appConfig = config;
   return config;
+}
+
+async function saveAppConfig(config: AppConfig) {
+  await loadAllData();
+  CACHED_DATA.appConfig = config;
+  await saveData();
+  state.appConfig = config;
+}
+
+/*****  --  Glazes: App Config  --  *****/
+export async function addGlazeItem(newValue: string = "New Glaze") {
+  const config = CACHED_DATA.appConfig;
+  config.glazes.push(newValue);
+  await saveAppConfig(config);
+}
+
+export async function editGlazeItem(newValue: string, index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.glazes[index] = newValue;
+  await saveAppConfig(config);
+}
+
+export async function deleteGlazeItem(index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.glazes.splice(index, 1);
+  await saveAppConfig(config);
+}
+
+/*****  --  Studio: App Config  --  *****/
+export async function addStudioItem(newValue: string = "New Studio") {
+  const config = CACHED_DATA.appConfig;
+  config.studio.push(newValue);
+  await saveAppConfig(config);
+}
+
+export async function editStudioItem(newValue: LazyOption, index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.studio[index] = newValue;
+  await saveAppConfig(config);
+}
+
+export async function deleteStudioItem(index: number) {
+  const config = CACHED_DATA.appConfig;
+  config.studio.splice(index, 1);
+  await saveAppConfig(config);
 }
