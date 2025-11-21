@@ -22,7 +22,21 @@ export function transform(data: DbxData) {
   if (data.version < 4.1) data = porcelainTypos(data);
   if (data.version < 5) data = emptyConfig(data);
   if (data.version < 5.1) data = addStudio(data);
+  if (data.version < 6) data = dropInspiration(data);
   return data;
+}
+
+function dropInspiration(data: DbxData): DbxData {
+  const images: Image[] = data.images.map((img) => {
+    const i = { ...img };
+    delete i.is_inspiration;
+    return i;
+  });
+  return {
+    ...data,
+    images: images,
+    version: 6,
+  };
 }
 
 function addStudio(data: DbxData): DbxData {
