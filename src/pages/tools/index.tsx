@@ -39,13 +39,23 @@ export default function Tools() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        // this is some bad css, but...
+        display: "flex",
+        flexDirection: "column",
+        maxWidth: 400,
+        gap: 10,
+        margin: "0 auto",
+        width: "-webkit-fill-available",
+      }}
+    >
+      <Button onClick={goToConfigEditor}>Config Editor</Button>
+      <Button onClick={imagePieceCountHandler}>Set Image Count Full</Button>
+      <Button onClick={checkImagesHandler}>Check for images</Button>
       <Button onClick={loadAllData}>Load from Dropbox</Button>
       <Button onClick={saveData}>Save to Dropbox</Button>
       <Button onClick={logData}>Log Data</Button>
-      <Button onClick={imagePieceCountHandler}>Set Image Count Full</Button>
-      <Button onClick={checkImagesHandler}>Check for images</Button>
-      <Button onClick={goToConfigEditor}>Config Editor</Button>
       <div>
         <label>Number of images: </label>
         <span>{images.length}</span>
