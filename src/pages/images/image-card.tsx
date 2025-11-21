@@ -30,12 +30,6 @@ export default function ImageCard(props: Props) {
     });
   }
 
-  function toggleInspiration() {
-    saveHandler({
-      is_inspiration: !image.is_inspiration,
-    });
-  }
-
   function numPiecesChanged(numPieces: number | null) {
     if (!numPieces) return;
     return saveHandler({ number_pieces: numPieces });
@@ -52,10 +46,6 @@ export default function ImageCard(props: Props) {
           min={0}
           onChange={numPiecesChanged}
         />
-      </div>
-      <div>
-        <label>Is Inspiration:</label>
-        <Switch value={image.is_inspiration} onChange={toggleInspiration} />
       </div>
       <div>
         <label>All Images Set:</label>

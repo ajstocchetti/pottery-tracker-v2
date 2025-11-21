@@ -2,7 +2,7 @@ export interface Image {
   // id: string;
   // image: string;
   fileName: string;
-  is_inspiration: boolean;
+  is_inspiration?: boolean; // deprecated
   number_pieces: number;
   tags: string[];
   created_at: string;

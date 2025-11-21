@@ -9,7 +9,6 @@ import ImageCard from "./image-card";
 const filterOptions: SelectOptions = [
   { label: "Need Pieces", value: "NEED_PIECES" },
   { label: "All Pieces Set", value: "FULL" },
-  { label: "Inspiration", value: "INSPIRATION" },
   { label: "All", value: "ALL" },
 ];
 

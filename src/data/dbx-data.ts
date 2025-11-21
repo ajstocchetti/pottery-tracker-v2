@@ -201,17 +201,10 @@ export async function loadImages(
   let images = resp.images;
   switch (filterType) {
     case "NEED_PIECES":
-      images = images.filter(
-        (img) => !img.is_inspiration && !img.all_pieces_added
-      );
+      images = images.filter((img) => !img.all_pieces_added);
       break;
     case "FULL":
-      images = images.filter(
-        (img) => !img.is_inspiration && img.all_pieces_added
-      );
-      break;
-    case "INSPIRATION":
-      images = images.filter((img) => img.is_inspiration);
+      images = images.filter((img) => img.all_pieces_added);
       break;
     case "ALL":
       break;
@@ -237,7 +230,6 @@ export async function uploadImage(fileInfo: File, pieceId: string) {
     CACHED_DATA.images.push({
       fileName: fileName,
       created_at: new Date().toISOString(),
-      is_inspiration: false,
       number_pieces: 1,
       all_pieces_added: true,
       tags: [],
@@ -335,7 +327,6 @@ export async function checkImageDirectory(
       CACHED_DATA.images.push({
         fileName,
         created_at: new Date().toISOString(),
-        is_inspiration: false,
         number_pieces: 1,
         all_pieces_added: false,
         tags: [],
