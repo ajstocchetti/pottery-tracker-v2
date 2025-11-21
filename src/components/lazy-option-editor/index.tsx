@@ -1,10 +1,9 @@
 import { LazyOption, SelectOption } from "src/interfaces";
-import { Button, Popconfirm, Switch } from "antd";
+import { Button, Input, Popconfirm, Switch } from "antd";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 import SelectOptionEditor from "./select-option-editor";
-import StringOptionEditor from "./string-editor";
 import style from "./style.module.css";
 
 interface Props {
@@ -42,7 +41,14 @@ export default function LazyOptionEditor(props: Props) {
   }
 
   function displayValue() {
-    return typeof inputOption === "string" ? inputOption : inputOption.label;
+    return typeof inputOption === "string"
+      ? inputOption
+      : `${inputOption.label} [${inputOption.value}]`;
+  }
+
+  function onStringChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const nextValue = e.target.value;
+    setOption(nextValue);
   }
 
   return (
@@ -62,7 +68,7 @@ export default function LazyOptionEditor(props: Props) {
 
       <div className={style.spacedRow}>
         {typeof option === "string" ? (
-          <StringOptionEditor option={option} onChange={setOption} />
+          <Input value={option} onChange={onStringChange} />
         ) : (
           <SelectOptionEditor option={option} onChange={setOption} />
         )}
