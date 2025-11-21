@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { loadAllData } from "src/data";
+import AppConfig from "src/pages/app-config";
 import DropboxUserLogin from "src/pages/login-dropbox";
 import Header from "src/components/header";
 import ErrorBoundary from "src/components/error-boundry";
@@ -43,6 +44,7 @@ function App() {
               <Route path="newpiece" Component={NewPiece} />
               <Route path="images" Component={Images} />
               <Route path="tools" Component={Tools} />
+              <Route path="app-config" Component={AppConfig} />
               <Route path="*" Component={NotFound} />
             </Routes>
           </div>

@@ -30,7 +30,7 @@ export interface Piece {
   images: string[];
   studio: string;
 }
-interface SelectOption {
+export interface SelectOption {
   label: string;
   value: string;
 }
