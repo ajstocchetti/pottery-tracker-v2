@@ -3,7 +3,6 @@ import { Button, Input, Popconfirm, Switch } from "antd";
 import { DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import SelectOptionEditor from "./select-option-editor";
 import style from "./style.module.css";
 
 interface Props {
@@ -92,6 +91,41 @@ export default function LazyOptionEditor(props: Props) {
           </Popconfirm>
         )}
       </div>
+    </div>
+  );
+}
+
+interface SelectEditorProps {
+  option: SelectOption;
+  onChange: (opt: SelectOption) => void;
+}
+
+function SelectOptionEditor(props: SelectEditorProps) {
+  const { option: inputOption } = props;
+  const [option, setOption] = useState<SelectOption>({ label: "", value: "" });
+
+  useEffect(() => {
+    setOption(inputOption);
+  }, [inputOption]);
+
+  function onChangeOptionValue(e: React.ChangeEvent<HTMLInputElement>) {
+    const nextOption = { ...option, value: e.target.value };
+    setOption(nextOption);
+    props.onChange(nextOption);
+  }
+
+  function onChangeOptionLabel(e: React.ChangeEvent<HTMLInputElement>) {
+    const nextOption = { ...option, label: e.target.value };
+    setOption(nextOption);
+    props.onChange(nextOption);
+  }
+
+  return (
+    <div>
+      <label>Display Name</label>
+      <Input value={option.label} onChange={onChangeOptionLabel} />
+      <label>Value</label>
+      <Input value={option.value} onChange={onChangeOptionValue} />
     </div>
   );
 }
