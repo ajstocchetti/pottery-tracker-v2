@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  Collapse,
   DatePicker,
   Input,
   InputRef,
@@ -8,6 +9,7 @@ import {
   Radio,
   Switch,
 } from "antd";
+import type { CollapseProps } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { DeleteOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -41,6 +43,24 @@ export default function PieceDetails() {
   const { appConfig } = useSnapshot(state);
 
   const glazeTextRef = useRef<InputRef>(null);
+
+  const glazeSections: CollapseProps["items"] = Object.keys(
+    appConfig.glazes
+  ).map((key, keyIndex) => {
+    return {
+      key: keyIndex,
+      label: key,
+      children: appConfig.glazes[key].map((glaze, i) => (
+        <Button
+          key={i}
+          onClick={glazeBtnClick(glaze)}
+          style={{ margin: "0.5rem 0.5rem 0 0" }}
+        >
+          {glaze}
+        </Button>
+      )),
+    };
+  });
 
   useEffect(() => {
     return () => {
@@ -298,15 +318,8 @@ export default function PieceDetails() {
           value={piece.glaze}
           onChange={setPieceEvtTarget("glaze")}
         />
-        {appConfig.glazes.map((glaze, i) => (
-          <Button
-            key={i}
-            onClick={glazeBtnClick(glaze)}
-            style={{ margin: "0.5rem 0.5rem 0 0" }}
-          >
-            {glaze}
-          </Button>
-        ))}
+
+        <Collapse items={glazeSections} />
       </div>
 
       <div className={style.formItem}>

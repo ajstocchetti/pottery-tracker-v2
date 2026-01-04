@@ -40,6 +40,6 @@ export type LazyOption = SelectOption | string;
 export interface AppConfig {
   claybody: LazyOption[];
   form: LazyOption[];
-  glazes: string[];
+  glazes: { [key: string]: string[] };
   studio: LazyOption[];
 }

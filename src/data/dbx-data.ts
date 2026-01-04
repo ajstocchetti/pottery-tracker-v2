@@ -21,7 +21,7 @@ const CACHED_DATA: DbxData = {
   appConfig: {
     claybody: [],
     form: [],
-    glazes: [],
+    glazes: {},
     studio: [],
   },
   version: 0,
@@ -99,7 +99,7 @@ export function clearDbxCache() {
   CACHED_DATA.appConfig = {
     claybody: [],
     form: [],
-    glazes: [],
+    glazes: {},
     studio: [],
   };
   DATA_LAST_LOADED = 0;
@@ -373,7 +373,7 @@ function defaultAppConfig(): AppConfig {
   return {
     claybody: [],
     form: [],
-    glazes: [],
+    glazes: {},
     studio: [],
   };
 }
