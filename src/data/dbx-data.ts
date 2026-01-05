@@ -431,22 +431,57 @@ export async function deleteFormItem(index: number) {
 }
 
 /*****  --  Glazes: App Config  --  *****/
-export async function addGlazeItem(newValue: string = "New Glaze") {
+export async function addGlazeSection(sectionName: string = "Glaze Section") {
   const config = CACHED_DATA.appConfig;
-  config.glazes.push(newValue);
+  if (!config.glazes[sectionName]) {
+    config.glazes[sectionName] = [];
+    await saveAppConfig(config);
+  }
+}
+
+export async function renameGlazeSection(
+  currentSection: string,
+  newValue: string
+) {
+  if (currentSection === newValue) return;
+  const config = CACHED_DATA.appConfig;
+  if (config.glazes[currentSection]) {
+    config.glazes[newValue] = config.glazes[currentSection];
+    delete config.glazes[currentSection];
+    await saveAppConfig(config);
+  }
+}
+
+export async function addGlazeItem(
+  section: string,
+  newValue: string = "New Glaze"
+) {
+  const config = CACHED_DATA.appConfig;
+  if (!config.glazes[section]) {
+    config.glazes[section] = [];
+  }
+  config.glazes[section].push(newValue);
   await saveAppConfig(config);
 }
 
-export async function editGlazeItem(newValue: string, index: number) {
+export async function editGlazeItem(
+  section: string,
+  newValue: string,
+  index: number
+) {
   const config = CACHED_DATA.appConfig;
-  config.glazes[index] = newValue;
-  await saveAppConfig(config);
+  if (config.glazes[section]) {
+    config.glazes[section][index] = newValue;
+    await saveAppConfig(config);
+  }
 }
 
-export async function deleteGlazeItem(index: number) {
+export async function deleteGlazeItem(section: string, index: number) {
   const config = CACHED_DATA.appConfig;
-  config.glazes.splice(index, 1);
-  await saveAppConfig(config);
+  if (config.glazes[section]) {
+    config.glazes[section].splice(index, 1);
+    await saveAppConfig(config);
+  }
 }
 
 /*****  --  Studio: App Config  --  *****/
