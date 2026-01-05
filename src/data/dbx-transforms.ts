@@ -23,7 +23,21 @@ export function transform(data: DbxData) {
   if (data.version < 5) data = emptyConfig(data);
   if (data.version < 5.1) data = addStudio(data);
   if (data.version < 6) data = dropInspiration(data);
+  if (data.version < 7) data = addGlazeSections(data);
   return data;
+}
+
+function addGlazeSections(data: DbxData): DbxData {
+  return {
+    ...data,
+    appConfig: {
+      ...data.appConfig,
+      glazes: {
+        "Standard Glazes": data.appConfig.glazes,
+      },
+    },
+    version: 7,
+  };
 }
 
 function dropInspiration(data: DbxData): DbxData {

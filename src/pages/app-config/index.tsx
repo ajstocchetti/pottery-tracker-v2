@@ -2,9 +2,7 @@ import { Button, Collapse } from "antd";
 import { useSnapshot } from "valtio";
 import LazyOptionEditor from "src/components/lazy-option-editor";
 import {
-  addGlazeItem,
-  deleteGlazeItem,
-  editGlazeItem,
+  addGlazeSection,
   addStudioItem,
   editStudioItem,
   deleteStudioItem,
@@ -16,6 +14,7 @@ import {
   deleteFormItem,
 } from "src/data";
 import { state } from "src/store/valio";
+import GlazeSection from "./glaze-section";
 
 const newBtnStyle = {
   width: 175,
@@ -90,25 +89,25 @@ export default function AppConfig() {
             label: "Glazes",
             children: (
               <>
-                {appConfig.glazes.map((glaze, idx) => (
-                  <LazyOptionEditor
-                    key={idx}
-                    option={glaze}
-                    onSave={(newValue) => {
-                      // @ts-expect-error - we know newValue will be a string when disableComplex is true
-                      editGlazeItem(newValue, idx);
-                    }}
-                    onDelete={() => deleteGlazeItem(idx)}
-                    disableComplex={true}
-                    optionType="glaze"
-                  />
-                ))}
+                <Collapse
+                  items={Object.entries(appConfig.glazes).map(
+                    ([section, glazes], sectionIndex) => {
+                      return {
+                        key: sectionIndex,
+                        label: section,
+                        children: (
+                          <GlazeSection sectionName={section} glazes={glazes} />
+                        ),
+                      };
+                    }
+                  )}
+                />
                 <Button
-                  style={newBtnStyle}
+                  style={{ marginTop: "1rem" }}
                   type="primary"
-                  onClick={() => addGlazeItem()}
+                  onClick={() => addGlazeSection()}
                 >
-                  New Glaze
+                  New Glaze Section
                 </Button>
               </>
             ),
