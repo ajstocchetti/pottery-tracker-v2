@@ -44,13 +44,13 @@ export default function PieceDetails() {
 
   const glazeTextRef = useRef<InputRef>(null);
 
-  const glazeSections: CollapseProps["items"] = Object.keys(
+  const glazeSections: CollapseProps["items"] = Object.entries(
     appConfig.glazes
-  ).map((key, keyIndex) => {
+  ).map(([section, glazes], keyIndex) => {
     return {
       key: keyIndex,
-      label: key,
-      children: appConfig.glazes[key].map((glaze, i) => (
+      label: section,
+      children: glazes.map((glaze, i) => (
         <Button
           key={i}
           onClick={glazeBtnClick(glaze)}
