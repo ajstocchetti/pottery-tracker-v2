@@ -22,7 +22,7 @@ export const initialStore: store = {
   appConfig: {
     claybody: [],
     form: [],
-    glazes: [],
+    glazes: {},
     studio: [],
   },
 };
