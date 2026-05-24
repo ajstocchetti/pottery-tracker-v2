@@ -5,6 +5,7 @@ import { loadAllData } from "src/data";
 import AppConfig from "src/pages/app-config";
 import DropboxUserLogin from "src/pages/login-dropbox";
 import Header from "src/components/header";
+import Footer from "src/components/footer";
 import ErrorBoundary from "src/components/error-boundry";
 import Images from "src/pages/images";
 import NewPiece from "src/pages/piece-new";
@@ -48,6 +49,7 @@ function App() {
               <Route path="*" Component={NotFound} />
             </Routes>
           </div>
+          <Footer />
         </>
       </BrowserRouter>
     </ErrorBoundary>

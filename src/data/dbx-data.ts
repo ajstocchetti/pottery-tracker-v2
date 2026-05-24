@@ -82,15 +82,20 @@ export async function loadAllData(): Promise<DbxData> {
 }
 
 export async function saveData() {
-  const now = Date.now();
-  const toSync = JSON.stringify(CACHED_DATA);
-  await getDbx().filesUpload({
-    path: dataFilePath,
-    contents: toSync,
-    mute: true,
-    mode: "overwrite",
-  });
-  DATA_LAST_LOADED = now;
+  state.dbxInprocessSaves = state.dbxInprocessSaves + 1;
+  try {
+    const now = Date.now();
+    const toSync = JSON.stringify(CACHED_DATA);
+    await getDbx().filesUpload({
+      path: dataFilePath,
+      contents: toSync,
+      mute: true,
+      mode: "overwrite",
+    });
+    DATA_LAST_LOADED = now;
+  } finally {
+    state.dbxInprocessSaves = state.dbxInprocessSaves - 1;
+  }
 }
 
 export function clearDbxCache() {
@@ -114,7 +119,7 @@ export function clearDbxCache() {
 export async function loadPieces(
   ordering: string,
   status: string,
-  textFilter: string = ""
+  textFilter: string = "",
 ): Promise<Piece[] | undefined> {
   const resp = await loadAllData();
   let pieces = resp?.pieces || [];
@@ -129,7 +134,7 @@ export async function loadPieces(
   if (textFilter) {
     const regx = new RegExp(textFilter, "i");
     pieces = pieces.filter(
-      (p) => regx.test(p.notes) || regx.test(p.glaze) || regx.test(p.fate)
+      (p) => regx.test(p.notes) || regx.test(p.glaze) || regx.test(p.fate),
     );
   }
   let sortOrder: "asc" | "desc" = "asc";
@@ -148,7 +153,7 @@ export async function loadPiece(pieceId: string): Promise<Piece | undefined> {
 
 export async function savePiece(
   piece: Piece,
-  isNew: boolean = false
+  isNew: boolean = false,
 ): Promise<Piece | undefined> {
   function getStatus(piece: Piece): string {
     if (piece.is_abandoned) return "ABANDONED";
@@ -195,7 +200,7 @@ let imageSrcTimeoutCount = 0;
 const fullPath = (fileName: string): string => `${imagesDir}/${fileName}`;
 
 export async function loadImages(
-  filterType: string = "NEED_PIECES"
+  filterType: string = "NEED_PIECES",
 ): Promise<Image[]> {
   const resp = await loadAllData();
   let images = resp.images;
@@ -306,7 +311,7 @@ export async function updateImagePieceCount() {
 
 export async function checkImageDirectory(
   cursor: files.ListFolderResult["cursor"] | null = null,
-  dbx: Dropbox = getDbx()
+  dbx: Dropbox = getDbx(),
 ) {
   let func;
   if (cursor) {
@@ -441,7 +446,7 @@ export async function addGlazeSection(sectionName: string = "Glaze Section") {
 
 export async function renameGlazeSection(
   currentSection: string,
-  newValue: string
+  newValue: string,
 ) {
   if (currentSection === newValue) return;
   const config = CACHED_DATA.appConfig;
@@ -454,7 +459,7 @@ export async function renameGlazeSection(
 
 export async function addGlazeItem(
   section: string,
-  newValue: string = "New Glaze"
+  newValue: string = "New Glaze",
 ) {
   const config = CACHED_DATA.appConfig;
   if (!config.glazes[section]) {
@@ -467,7 +472,7 @@ export async function addGlazeItem(
 export async function editGlazeItem(
   section: string,
   newValue: string,
-  index: number
+  index: number,
 ) {
   const config = CACHED_DATA.appConfig;
   if (config.glazes[section]) {

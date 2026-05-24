@@ -6,6 +6,7 @@ interface store {
   isLoggedIn: boolean;
   user: null | { email: string };
   dbxInstance: null | any;
+  dbxInprocessSaves: number;
   pieceListSort: string;
   pieceListStatus: string;
   imageListFilter: string;
@@ -16,6 +17,7 @@ export const initialStore: store = {
   isLoggedIn: false,
   user: null,
   dbxInstance: null,
+  dbxInprocessSaves: 0,
   pieceListSort: "updated_at",
   pieceListStatus: "NEEDS_TRIMMING",
   imageListFilter: "NEED_PIECES",
