@@ -45,7 +45,7 @@ export default function PieceDetails() {
   const glazeTextRef = useRef<InputRef>(null);
 
   const glazeSections: CollapseProps["items"] = Object.entries(
-    appConfig.glazes
+    appConfig.glazes,
   ).map(([section, glazes], keyIndex) => {
     return {
       key: keyIndex,
@@ -105,7 +105,7 @@ export default function PieceDetails() {
     if (updated) setPiece(updated);
   }
 
-  const debounceSave = useMemo(() => _.debounce(savePieceHandler, 4000), []);
+  const debounceSave = useMemo(() => _.debounce(savePieceHandler, 10000), []);
 
   function setPieceValue(key: string) {
     return function (value: any) {
